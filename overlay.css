@@ -1,0 +1,419 @@
+.grid-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 2147483647;
+  display: none;
+}
+
+.grid-overlay-container.active {
+  display: block;
+}
+
+.grid-overlay-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.grid-overlay-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  pointer-events: auto;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 280px;
+  width: 320px;
+  resize: horizontal;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+}
+
+/* Remove number input arrows */
+.grid-overlay-controls input[type="number"]::-webkit-outer-spin-button,
+.grid-overlay-controls input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.grid-overlay-controls input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.grid-overlay-controls h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.grid-control-group {
+  margin-bottom: 16px;
+}
+
+.grid-control-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.grid-control-group label .value-display {
+  color: #fff;
+  font-weight: 500;
+}
+
+.grid-control-group input[type="number"],
+.grid-control-group input[type="color"],
+.grid-control-group input[type="text"],
+.grid-control-group select {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  transition: border-color 0.2s;
+}
+
+.grid-control-group input[type="number"]:focus,
+.grid-control-group input[type="color"]:focus,
+.grid-control-group input[type="text"]:focus,
+.grid-control-group select:focus {
+  outline: none;
+  border-color: #0066ff;
+}
+
+.grid-control-group input[type="range"] {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+}
+
+.grid-control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #0066ff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.grid-control-group input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #0066ff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.grid-control-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.grid-btn {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.grid-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.grid-btn-primary {
+  background: #0066ff;
+  border-color: #0066ff;
+}
+
+.grid-btn-primary:hover {
+  background: #0052cc;
+}
+
+.grid-btn-danger {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+
+.grid-btn-danger:hover {
+  background: #c82333;
+}
+
+.grid-preset-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.grid-preset-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.grid-preset-item span {
+  flex: 1;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.grid-preset-item span:hover {
+  color: #0066ff;
+}
+
+.grid-preset-delete {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+.grid-preset-delete:hover {
+  background: rgba(220, 53, 69, 0.8);
+}
+
+.grid-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 24px;
+  pointer-events: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.grid-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.breakpoint-list {
+  margin-top: 10px;
+}
+
+.breakpoint-header {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 40px;
+  gap: 8px;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+
+.breakpoint-item {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.breakpoint-item.active {
+  background: rgba(0, 102, 255, 0.2);
+  border: 1px solid rgba(0, 102, 255, 0.4);
+}
+
+.breakpoint-item input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.breakpoint-item input[data-field="name"] {
+  min-width: 0;
+}
+
+.breakpoint-item input[type="number"] {
+  min-width: 0;
+}
+
+.breakpoint-item button {
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.breakpoint-item button:hover {
+  background: rgba(220, 53, 69, 0.8);
+}
+
+.section-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+}
+
+.info-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.grid-viewport-indicator {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+  z-index: 2147483646;
+  display: none;
+}
+
+.grid-overlay-container.active .grid-viewport-indicator {
+  display: block;
+}
+
+.grid-zoom-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grid-zoom-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-weight: bold;
+}
+
+.grid-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.grid-zoom-label {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+.grid-visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.grid-visibility-toggle label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.active {
+  background: #0066ff;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(22px);
+}
