@@ -18,26 +18,97 @@
   display: block;
 }
 
-.grid-overlay-controls {
+/* Parent wrapper for controls and resize handle */
+.grid-controls-wrapper {
   position: fixed;
   top: 20px;
   right: 20px;
+  bottom: 20px;
+  display: flex;
+  min-width: 280px;
+  width: 320px;
+  max-width: 600px;
+  max-height: calc(100vh - 40px);
+  --controls-width: 320px;
+  pointer-events: auto;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Scrollable controls content */
+.grid-overlay-controls {
+  flex: 1;
   background: rgba(0, 0, 0, 0.95);
   color: #fff;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 0 12px 12px 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
-  pointer-events: auto;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
+  height: calc(100% - 40px);
+  overflow-y: scroll;
   overflow-x: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  min-width: 280px;
-  width: 320px;
-  resize: horizontal;
   backdrop-filter: blur(10px);
-  max-width: 600px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+/* Modern scrollbar styling */
+.grid-overlay-controls::-webkit-scrollbar {
+  width: 8px;
+}
+
+.grid-overlay-controls::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+.grid-overlay-controls::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.grid-overlay-controls::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.grid-overlay-controls::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Hide scrollbar buttons (arrows) */
+.grid-overlay-controls::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Left resize handle - separate element, doesn't scroll */
+.grid-resize-handle {
+  width: 8px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px 0 0 12px;
+  cursor: ew-resize;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.grid-resize-handle:hover {
+  background: rgba(0,0,0,0.85);
+}
+
+/* Resize handle visual grip indicator */
+.resize-handle-grip {
+  width: 2px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1px;
+  pointer-events: none;
 }
 
 /* Remove number input arrows */
@@ -64,19 +135,139 @@
 }
 
 .grid-control-group label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: block;
   margin-bottom: 6px;
   font-size: 12px;
-  color: #aaa;
-}
-
-.grid-control-group label .value-display {
-  color: #fff;
+  color: #b8b8b8;
   font-weight: 500;
 }
 
+/* 2-column form layout */
+.grid-control-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.grid-control-row label {
+  font-size: 12px;
+  color: #b8b8b8;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Figma-style unified input fields */
+.figma-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  transition: border-color 0.2s, background-color 0.2s;
+  height: 32px;
+  overflow: hidden;
+}
+
+.figma-input-wrapper:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.figma-input-wrapper:focus-within {
+  outline: none;
+  border-color: #0066ff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.figma-input,
+.figma-input-wrapper input[type="number"],
+.figma-input-wrapper input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  text-align: right;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "SF Mono", Monaco, Consolas, monospace;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.figma-input:focus,
+.figma-input-wrapper input:focus {
+  outline: none;
+}
+
+/* Remove number input spinners */
+.figma-input-wrapper input[type="number"]::-webkit-outer-spin-button,
+.figma-input-wrapper input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-unit {
+  padding-right: 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  user-select: none;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Color picker container */
+.color-input-container {
+  position: relative;
+  width: 100%;
+  height: 32px;
+}
+
+/* Hidden color input positioned over swatch */
+.color-input-hidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  z-index: 2;
+}
+
+/* Color swatch visual */
+.color-swatch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  pointer-events: none;
+  background-color: #ff00ff;
+  transition: border-color 0.2s, opacity 0.2s;
+  z-index: 1;
+}
+
+.color-input-hidden:hover+.color-swatch {
+  border-color: rgba(255, 255, 255, 0.3);
+  opacity: 0.9;
+}
+
+.color-input-hidden:active+.color-swatch {
+  opacity: 0.8;
+}
+
+/* Legacy input styles for compatibility */
 .grid-control-group input[type="number"],
 .grid-control-group input[type="color"],
 .grid-control-group input[type="text"],
@@ -113,7 +304,7 @@
   width: 16px;
   height: 16px;
   background: #0066ff;
-  border-radius: 50%;
+  border-radius: 99rem;
   cursor: pointer;
 }
 
@@ -121,7 +312,7 @@
   width: 16px;
   height: 16px;
   background: #0066ff;
-  border-radius: 50%;
+  border-radius: 99rem;
   cursor: pointer;
   border: none;
 }
@@ -142,30 +333,31 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: background-color 0.2s, opacity 0.2s;
 }
 
 .grid-btn:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
 }
 
 .grid-btn-primary {
   background: #0066ff;
-  border-color: #0066ff;
+  border: 1px solid #0066ff;
 }
 
 .grid-btn-primary:hover {
   background: #0052cc;
+  border: 1px solid #0052cc;
 }
 
 .grid-btn-danger {
   background: #dc3545;
-  border-color: #dc3545;
+  border: 1px solid #dc3545;
 }
 
 .grid-btn-danger:hover {
   background: #c82333;
+  border: 1px solid #c82333;
 }
 
 .grid-preset-item {
@@ -215,8 +407,8 @@
   width: 56px;
   height: 56px;
   background: rgba(0, 0, 0, 0.95);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 99rem;
   color: #fff;
   cursor: pointer;
   font-size: 24px;
@@ -230,73 +422,89 @@
 }
 
 .grid-toggle-btn:hover {
-  transform: scale(1.1);
+  background: rgba(0, 0, 0, 1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-.breakpoint-list {
-  margin-top: 10px;
+/* Breakpoint selector buttons */
+.breakpoint-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
-.breakpoint-header {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 40px;
-  gap: 8px;
-  padding: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 8px;
-}
-
-.breakpoint-item {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 0.7fr 0.8fr 0.8fr 40px;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.05);
+.breakpoint-chip {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
-  margin-bottom: 6px;
+  color: #b8b8b8;
   font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
 }
 
-.breakpoint-item.active {
+.breakpoint-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* Editing state - blue highlight */
+.breakpoint-chip.editing {
   background: rgba(0, 102, 255, 0.2);
-  border: 1px solid rgba(0, 102, 255, 0.4);
+  border-color: rgba(0, 102, 255, 0.5);
+  color: #0066ff;
 }
 
-.breakpoint-item input {
+/* Viewport match icon */
+.viewport-match-icon {
+  font-size: 8px;
+  color: #00ff88;
+  line-height: 1;
+  margin-right: -2px;
+}
+
+.breakpoint-chip.viewport-match .viewport-match-icon {
+  color: #00ff88;
+}
+
+.breakpoint-chip-name {
+  font-weight: 600;
+}
+
+.breakpoint-chip-width {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.breakpoint-chip-delete {
+  width: 16px;
+  height: 16px;
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 99rem;
   color: #fff;
-  padding: 4px 6px;
-  border-radius: 4px;
   font-size: 12px;
-}
-
-.breakpoint-item input[data-field="name"] {
-  min-width: 0;
-}
-
-.breakpoint-item input[type="number"] {
-  min-width: 0;
-}
-
-.breakpoint-item button {
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  color: #fff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 11px;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-left: auto;
 }
 
-.breakpoint-item button:hover {
+.breakpoint-chip-delete:hover {
   background: rgba(220, 53, 69, 0.8);
+  border-color: rgba(220, 53, 69, 1);
 }
 
 .section-divider {
@@ -307,7 +515,7 @@
 
 .info-text {
   font-size: 11px;
-  color: #888;
+  color: #9a9a9a;
   margin-top: 4px;
   font-style: italic;
 }
@@ -315,32 +523,94 @@
 .grid-viewport-indicator {
   position: fixed;
   top: 20px;
-  left: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.95);
   color: #fff;
-  padding: 12px 16px;
+  padding: 10px 20px;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 13px;
   pointer-events: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
-  font-weight: 500;
   z-index: 2147483646;
   display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 }
 
 .grid-overlay-container.active .grid-viewport-indicator {
+  display: flex;
+}
+
+.viewport-width {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+  letter-spacing: -0.5px;
+}
+
+.indicator-separator {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.breakpoint-name {
+  color: #0066ff;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.breakpoint-range {
+  color: #888;
+  font-weight: 500;
+  font-size: 11px;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+}
+
+.mode-status {
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mode-status.viewing {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.15);
+}
+
+.mode-status.editing {
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.15);
+}
+
+.grid-zoom-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.zoom-section-label {
   display: block;
+  font-size: 12px;
+  color: #b8b8b8;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .grid-zoom-controls {
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .grid-zoom-btn {
@@ -355,24 +625,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
   font-weight: bold;
 }
 
 .grid-zoom-btn:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
 }
 
 .grid-zoom-label {
   flex: 1;
   text-align: center;
   font-size: 12px;
-  color: #888;
+  color: #b8b8b8;
   font-weight: 500;
 }
 
-.grid-visibility-toggle {
+.grid-visibility-toggle,
+.grid-mode-toggle {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -382,11 +652,27 @@
   border-radius: 8px;
 }
 
-.grid-visibility-toggle label {
+.grid-visibility-toggle label,
+.grid-mode-toggle label {
   flex: 1;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.keyboard-hint {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+  letter-spacing: 0.5px;
 }
 
 .toggle-switch {
@@ -410,7 +696,7 @@
   width: 20px;
   height: 20px;
   background: white;
-  border-radius: 50%;
+  border-radius: 99rem;
   transition: transform 0.3s;
 }
 

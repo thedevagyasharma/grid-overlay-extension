@@ -1,180 +1,319 @@
-# Grid Overlay Chrome Extension
+# Grid Overlay - Professional Layout Grid Extension
 
-A professional grid overlay tool for web developers and designers - like Figma's layout grids, but for any webpage.
+> Transform any website into a design playground with professional grid overlays and responsive breakpoint management.
 
-## Features
-
-✨ **Figma-Style Grid System**
-- Columns run from top to bottom across the entire document
-- Grid height matches document height, not just viewport
-- Customizable row gaps for horizontal guidelines
-
-🎯 **Responsive Breakpoints**
-- Auto-switching grids based on viewport width
-- Pre-configured breakpoints (Mobile, Tablet, Desktop, Wide)
-- Add custom breakpoints with unique column/gutter/margin settings
-
-⚙️ **Full Customization**
-- Columns: 1-24
-- Column gutter spacing
-- Row gap for horizontal guidelines
-- Outer margins
-- Max width with auto-centering
-- Vertical offset
-- Stretch to fit option
-- Color and opacity controls
-
-💾 **Preset System**
-- Save your favorite grid configurations
-- Quick switching between presets
-- Persistent across browser sessions
-
-## Installation
-
-### Option 1: Install from Chrome Web Store
-*(Coming soon)*
-
-### Option 2: Install Manually (Developer Mode)
-
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in top-right corner)
-4. Click "Load unpacked"
-5. Select the `grid-extension` folder
-6. The Grid Overlay extension is now installed!
-
-## Usage
-
-### Quick Start
-
-1. Click the Grid Overlay icon in your Chrome toolbar
-2. Click "Enable Grid" in the popup
-3. The grid will appear on your current page
-4. Look for the **☰ button** in the bottom-right corner to access settings
-
-### Controls
-
-**Basic Settings:**
-- **Columns**: Number of vertical columns (1-24)
-- **Column Gutter**: Spacing between columns in pixels
-- **Row Gap**: Spacing between horizontal guidelines (0 = no horizontal lines)
-- **Margin**: Outer spacing from viewport edges
-- **Max Width**: Maximum grid width (0 = full width, auto-centered)
-- **Offset Y**: Vertical offset to shift the entire grid up or down
-- **Stretch to fit**: When enabled, columns expand to fill available width
-
-**Visual Settings:**
-- **Grid Color**: Choose your grid color
-- **Opacity**: Adjust transparency (0-100%)
-
-**Responsive Breakpoints:**
-- View current breakpoints and their settings
-- Active breakpoint is highlighted based on current viewport width
-- Add custom breakpoints with the "Add Breakpoint" button
-- Edit breakpoint values inline (name, min width, columns, gutter, margin)
-- Delete unwanted breakpoints with the × button
-
-**Presets:**
-- Click "Save Preset" to save your current configuration
-- Click a preset name to load it
-- Delete presets you no longer need
-
-### Keyboard Shortcuts
-
-Currently, there are no keyboard shortcuts. Toggle the grid using the extension popup.
-
-### Toggle Controls
-
-Click the **☰ button** in the bottom-right to hide/show the settings panel while keeping the grid visible.
-
-## Default Breakpoints
-
-The extension comes with sensible defaults:
-
-| Name    | Min Width | Columns | Gutter | Margin |
-|---------|-----------|---------|--------|--------|
-| Mobile  | 0px       | 4       | 16px   | 16px   |
-| Tablet  | 768px     | 8       | 20px   | 24px   |
-| Desktop | 1024px    | 12      | 24px   | 40px   |
-| Wide    | 1440px    | 12      | 32px   | 80px   |
-
-## Common Use Cases
-
-### Bootstrap Grid (Desktop)
-- Columns: 12
-- Gutter: 30
-- Margin: 15
-- Max Width: 1140
-
-### Material Design
-- Columns: 12
-- Gutter: 16
-- Margin: 16
-- Max Width: 1280
-
-### 8-Point Grid System
-- Row Gap: 8
-- Column Gutter: 8
-- Margin: 8
-
-### Full-Width Design
-- Max Width: 0
-- Margin: 0
-- Stretch: Enabled
-
-## Technical Details
-
-- Grid is rendered using HTML5 Canvas for performance
-- Height automatically adjusts to match document height
-- ResizeObserver and MutationObserver ensure grid stays in sync with page changes
-- All settings persist using Chrome's storage API
-- Minimal performance impact - grid only redraws when necessary
-
-## Tips
-
-1. **Responsive Testing**: Resize your browser window to see breakpoints switch automatically
-2. **Vertical Rhythm**: Use the Row Gap setting to establish vertical spacing guidelines
-3. **Overlay Visibility**: Adjust opacity based on your background - lighter for dark sites, darker for light sites
-4. **Offset for Fixed Headers**: Use Offset Y to account for sticky navigation bars
-5. **Document Height**: The grid extends to the full document height, perfect for checking alignment on long pages
-
-## Troubleshooting
-
-**Grid not showing?**
-- Make sure you clicked "Enable Grid" in the popup
-- Try refreshing the page after installing the extension
-- Check that the opacity isn't set to 0%
-
-**Controls not visible?**
-- Look for the ☰ button in the bottom-right corner
-- It may be hidden behind other page elements - try scrolling
-
-**Breakpoints not switching?**
-- Verify your breakpoint min-width values are in ascending order
-- The extension automatically sorts them, but manual edits might conflict
-
-**Grid not matching document height?**
-- The grid uses JavaScript to detect document height
-- On dynamically loaded content, it should auto-adjust
-- If it doesn't, try toggling the grid off and on again
-
-## Future Enhancements
-
-- [ ] Keyboard shortcuts for quick toggle
-- [ ] Export/import preset configurations
-- [ ] Baseline grid option
-- [ ] Multiple grid layers
-- [ ] Screenshot with grid overlay
-- [ ] Grid templates library
-
-## License
-
-MIT License - Feel free to modify and distribute
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+A powerful Chrome extension that brings Figma-style layout grids to the web. Perfect for designers and developers who need pixel-perfect precision and responsive design verification.
 
 ---
 
-**Made with ❤️ for designers and developers who care about pixel-perfect layouts**
+## ✨ Key Features
+
+### 🎨 Professional Grid System
+- **Full-height columns** that extend across the entire document (not just viewport)
+- **Customizable row gaps** for horizontal rhythm guidelines
+- **Figma-style controls** with unified input fields and modern UI
+- **Canvas-based rendering** for optimal performance
+- **Real-time updates** as you adjust settings
+
+### 📱 Responsive Breakpoints
+- **Two powerful modes:**
+  - **Viewing Mode** 🟢 Grid automatically matches your viewport width
+  - **Editing Mode** 🟠 Manually select and edit specific breakpoints
+- **Pre-configured breakpoints** (Mobile, Tablet, Desktop, Wide)
+- **Custom breakpoints** with unique column/gutter/margin settings per breakpoint
+- **Auto-save** - changes to grid settings save to the current breakpoint
+- **Visual breakpoint selector** with chips showing active and viewport-matching states
+
+### 🎯 Advanced Controls
+- **Viewport indicator** (top-center) showing:
+  - Current viewport width
+  - Active breakpoint name and range
+  - Current mode (Viewing/Editing) with semantic colors
+- **Resizable control panel** with left-edge drag handle
+- **UI scaling** (50-200%) for comfortable viewing on any display
+- **Toggle visibility** for both grid overlay and viewport indicator
+- **Keyboard shortcut**: `Ctrl+Shift+G` to toggle grid visibility
+
+### ⚙️ Complete Customization
+- **Columns**: 1-24 columns
+- **Column Gutter**: Precise spacing control (px)
+- **Row Gap**: Horizontal guidelines for vertical rhythm
+- **Margin**: Outer spacing from viewport edges
+- **Max Width**: Container width with auto-centering
+- **Color & Opacity**: Full color picker with transparency control
+
+### 💾 Settings Management
+- **Import/Export** settings as JSON files
+- **Save presets** for quick switching between configurations
+- **Persistent storage** - all settings saved across browser sessions
+- **Backwards compatible** - gracefully handles old settings
+
+---
+
+## 🚀 Installation
+
+### From Chrome Web Store
+*(Coming soon - in review)*
+
+### Manual Installation (Developer Mode)
+
+1. **Download** or clone this repository
+2. Open Chrome and navigate to `chrome://extensions/`
+3. Enable **"Developer mode"** (toggle in top-right corner)
+4. Click **"Load unpacked"**
+5. Select the extension directory
+6. Click the extension icon to start using Grid Overlay!
+
+---
+
+## 📖 Usage Guide
+
+### Quick Start
+
+1. **Click** the Grid Overlay extension icon in your toolbar
+2. The grid will appear with default settings
+3. **Resize** your browser to see automatic breakpoint switching (Viewing Mode)
+4. **Click** the floating toggle button (☰) to show/hide the control panel
+
+### Understanding Modes
+
+#### 🟢 Viewing Mode (Default)
+- Grid **automatically** selects the breakpoint matching your viewport width
+- Perfect for **responsive testing** and layout verification
+- Resize browser to see different breakpoints activate
+- Indicator shows the **viewport-matching** breakpoint
+
+#### 🟠 Editing Mode
+- **Manually select** which breakpoint to edit
+- Clicking any breakpoint chip automatically switches to Editing Mode
+- Make changes to grid settings for that specific breakpoint
+- Indicator shows the **editing** breakpoint
+- Toggle back to Viewing Mode to resume auto-selection
+
+### Control Panel Overview
+
+**Top Section:**
+- **UI Scaling** - Zoom the control panel (50-200%)
+- **Show Grid** - Toggle grid overlay visibility (Ctrl+Shift+G)
+- **Show Indicator** - Toggle viewport indicator visibility
+- **Edit Mode** - Switch between Viewing and Editing modes
+
+**Breakpoints Section:**
+- **Breakpoint chips** - Click to select and edit
+  - Blue highlight = currently editing
+  - Green diamond (◆) = matches current viewport
+- **Add Breakpoint** - Create custom breakpoints
+
+**Grid Settings:**
+- **Columns** - Number of vertical columns
+- **Column Gutter** - Spacing between columns (px)
+- **Row Gap** - Horizontal guidelines spacing (px)
+- **Margin** - Outer spacing from edges (px)
+- **Max Width** - Container maximum width (px, 0 = full width)
+- **Grid Color** - Click swatch to choose color
+- **Opacity** - Transparency percentage
+
+**Bottom Section:**
+- **Save Preset** - Store current configuration
+- **Export Settings** - Download settings as JSON
+- **Import Settings** - Load settings from JSON file
+- **Presets List** - Quick access to saved configurations
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Shift+G` | Toggle grid visibility |
+
+---
+
+## 🎯 Default Breakpoints
+
+| Name    | Min Width | Columns | Gutter | Margin | Row Gap |
+|---------|-----------|---------|--------|--------|---------|
+| Mobile  | 0px       | 4       | 16px   | 16px   | 8px     |
+| Tablet  | 768px     | 8       | 20px   | 24px   | 8px     |
+| Desktop | 1024px    | 12      | 24px   | 40px   | 8px     |
+| Wide    | 1440px    | 12      | 32px   | 80px   | 8px     |
+
+---
+
+## 💡 Common Use Cases
+
+### Bootstrap Grid (Desktop)
+```
+Columns: 12
+Gutter: 30
+Margin: 15
+Max Width: 1140
+```
+
+### Material Design Grid
+```
+Columns: 12
+Gutter: 16
+Margin: 16
+Max Width: 1280
+```
+
+### 8-Point Grid System
+```
+Row Gap: 8
+Column Gutter: 8
+Margin: 8
+```
+
+### Tailwind CSS Container
+```
+Columns: 12
+Gutter: 16
+Breakpoints match Tailwind (sm/md/lg/xl/2xl)
+```
+
+### Full-Width Fluid Design
+```
+Columns: 12
+Max Width: 0
+Margin: 0
+Gutter: 24
+```
+
+---
+
+## 🔧 Technical Details
+
+### Performance
+- **HTML5 Canvas** rendering for optimal performance
+- **Automatic height adjustment** to match full document height
+- **ResizeObserver** and **MutationObserver** for real-time page sync
+- **Minimal CPU usage** - grid only redraws when necessary
+- **No jQuery** or heavy dependencies
+
+### Storage
+- Uses **Chrome Storage API** for persistent settings
+- Settings sync is **local only** (no cloud sync)
+- Backwards compatible with old settings formats
+- Automatic migration for legacy configurations
+
+### Permissions
+- `activeTab` - To display grid overlay on current page
+- `storage` - To save your settings and preferences
+
+### Browser Compatibility
+- Chrome 88+
+- Edge 88+ (Chromium-based)
+- Brave, Opera, Vivaldi (Chromium-based browsers)
+
+---
+
+## 💪 Pro Tips
+
+1. **Responsive Testing**: Keep in Viewing Mode and resize browser to verify layouts at different breakpoints
+
+2. **Design Verification**: Use Editing Mode to check specific breakpoint layouts without resizing
+
+3. **Vertical Rhythm**: Set Row Gap to your baseline (commonly 8px or 4px) for vertical spacing alignment
+
+4. **Opacity Adjustment**:
+   - Light backgrounds: Use darker colors with lower opacity (15-25%)
+   - Dark backgrounds: Use lighter colors with higher opacity (20-30%)
+
+5. **Team Collaboration**: Export settings and share JSON files with your team for consistent grids
+
+6. **Multiple Projects**: Save presets for each project/framework you work with
+
+7. **Keyboard Workflow**: Use `Ctrl+Shift+G` to quickly toggle grid on/off while working
+
+---
+
+## 🐛 Troubleshooting
+
+### Grid not showing?
+- Check that grid visibility is enabled (Show Grid toggle)
+- Verify opacity is not set to 0%
+- Try refreshing the page (`F5`)
+- Check if extension is enabled at `chrome://extensions/`
+
+### Controls not visible?
+- Look for the ☰ button in the bottom-right corner
+- Try scrolling - it's a fixed position element
+- Check if it's behind other page elements (high z-index)
+
+### Breakpoints not switching in Viewing Mode?
+- Ensure you're in Viewing Mode (green), not Editing Mode (orange)
+- Verify breakpoint min-width values are correct
+- Check that breakpoints don't have duplicate min-width values
+
+### Settings not saving?
+- Check Chrome storage quota (unlikely to hit limit)
+- Ensure you have storage permission enabled
+- Try manually saving settings with Export
+
+### Indicator not updating?
+- Toggle indicator visibility off and on
+- Refresh the page
+- Check if element is hidden by page CSS
+
+---
+
+## 🔒 Privacy
+
+This extension:
+- ✅ Works **completely offline**
+- ✅ Stores settings **locally** in your browser
+- ✅ Does **NOT collect** any personal data
+- ✅ Does **NOT track** your browsing
+- ✅ Does **NOT require** internet connection
+- ✅ Does **NOT communicate** with external servers
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Responsive breakpoint system
+- [x] Import/Export settings
+- [x] Viewing/Editing modes
+- [x] Keyboard shortcuts
+- [x] Viewport indicator
+- [ ] Baseline grid overlay
+- [ ] Multiple grid layers
+- [ ] Grid templates library
+- [ ] Screenshot with overlay
+- [ ] Sync settings across devices
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to:
+- Submit pull requests
+- Report bugs via [GitHub Issues](https://github.com/yourusername/grid-overlay-extension/issues)
+- Suggest features
+- Improve documentation
+
+---
+
+## 📄 License
+
+MIT License - Free to use, modify, and distribute
+
+---
+
+## 💬 Support
+
+- **Documentation**: See [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) for Chrome Web Store publishing
+- **Issues**: Report bugs on GitHub
+- **Updates**: Watch this repository for new releases
+
+---
+
+## 🏆 Credits
+
+Made with ❤️ for designers and developers who care about pixel-perfect layouts.
+
+**Version**: 1.0.0
+**Last Updated**: 2025
+
+---
+
+## ⭐ If you find this useful, please star the repository!
