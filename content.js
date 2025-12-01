@@ -1,6 +1,61 @@
 (function() {
   'use strict';
-  
+
+  // Check if extension context is valid
+  function isExtensionContextValid() {
+    try {
+      return chrome.runtime && chrome.runtime.id;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Gracefully handle extension context invalidation
+  if (!isExtensionContextValid()) {
+    console.warn('Grid Overlay: Extension context invalidated. Please refresh the page.');
+    return;
+  }
+
+  // Safe wrapper for Chrome Storage API calls
+  function safeStorageSet(data, callback) {
+    if (!isExtensionContextValid()) {
+      console.warn('Grid Overlay: Cannot save settings - extension context invalidated. Please refresh the page.');
+      return;
+    }
+    try {
+      chrome.storage.local.set(data, callback);
+    } catch (e) {
+      console.warn('Grid Overlay: Error saving settings:', e.message);
+      if (e.message && e.message.includes('Extension context invalidated')) {
+        console.warn('Grid Overlay: Please refresh the page to restore functionality.');
+      }
+    }
+  }
+
+  function safeStorageGet(keys, callback) {
+    if (!isExtensionContextValid()) {
+      console.warn('Grid Overlay: Cannot load settings - extension context invalidated. Please refresh the page.');
+      return;
+    }
+    try {
+      chrome.storage.local.get(keys, callback);
+    } catch (e) {
+      console.warn('Grid Overlay: Error loading settings:', e.message);
+      if (e.message && e.message.includes('Extension context invalidated')) {
+        console.warn('Grid Overlay: Please refresh the page to restore functionality.');
+      }
+    }
+  }
+
+  // Global error handler to catch any uncaught errors related to extension context
+  window.addEventListener('error', (event) => {
+    if (event.error && event.error.message && event.error.message.includes('Extension context invalidated')) {
+      console.warn('Grid Overlay: Extension was reloaded. Please refresh this page to restore grid overlay functionality.');
+      event.preventDefault(); // Prevent the error from being logged to console as uncaught
+      return true;
+    }
+  });
+
   let gridState = {
     enabled: false,
     gridVisible: true,
@@ -9,18 +64,21 @@
     editingMode: false, // false = viewing (auto-select), true = editing (manual selection)
     currentBreakpointIndex: 0,
     config: {
-      columns: 12,
-      gutter: 24,
-      margin: 40,
+      columns: 3,
+      gutter: 8,
+      margin: 16,
       rowGap: 8,
-      color: '#ff00ff',
+      color: '#ff0000',
       opacity: 0.15,
       maxWidth: 1200,
       breakpoints: [
-        { name: 'Mobile', minWidth: 0, columns: 4, gutter: 16, margin: 16, rowGap: 8 },
-        { name: 'Tablet', minWidth: 768, columns: 8, gutter: 20, margin: 24, rowGap: 8 },
-        { name: 'Desktop', minWidth: 1024, columns: 12, gutter: 24, margin: 40, rowGap: 8 },
-        { name: 'Wide', minWidth: 1440, columns: 12, gutter: 32, margin: 80, rowGap: 8 }
+        { name: 'xxs', minWidth: 0, columns: 3, gutter: 8, margin: 16, rowGap: 8 },
+        { name: 'xs', minWidth: 360, columns: 4, gutter: 12, margin: 16, rowGap: 8 },
+        { name: 'sm', minWidth: 550, columns: 6, gutter: 16, margin: 24, rowGap: 8 },
+        { name: 'md', minWidth: 768, columns: 8, gutter: 16, margin: 32, rowGap: 8 },
+        { name: 'lg', minWidth: 992, columns: 12, gutter: 16, margin: 48, rowGap: 8 },
+        { name: 'xl', minWidth: 1200, columns: 12, gutter: 20, margin: 48, rowGap: 8 },
+        { name: 'xxl', minWidth: 1440, columns: 12, gutter: 24, margin: 64, rowGap: 8 }
       ]
     }
   };
@@ -32,8 +90,8 @@
     createElements();
     loadSettings();
     setupListeners();
-    
-    chrome.storage.local.get(['gridEnabled'], (result) => {
+
+    safeStorageGet(['gridEnabled'], (result) => {
       if (result.gridEnabled) {
         toggleGrid(true);
       }
@@ -128,6 +186,25 @@
       <h3 style="margin: 0 0 10px 0;">Breakpoints</h3>
       <div id="breakpoint-selector" class="breakpoint-selector"></div>
       <button class="grid-btn" id="grid-add-breakpoint" style="width: 100%; margin-bottom: 16px;">+ Add Breakpoint</button>
+
+      <div class="section-divider"></div>
+
+      <h3 style="margin: 0 0 15px 0;">Breakpoint Settings</h3>
+
+      <div class="grid-control-row">
+        <label for="breakpoint-name-input">Name</label>
+        <div class="figma-input-wrapper">
+          <input type="text" id="breakpoint-name-input" value="Mobile" class="figma-input">
+        </div>
+      </div>
+
+      <div class="grid-control-row">
+        <label for="breakpoint-min-width-input">Min Width</label>
+        <div class="figma-input-wrapper">
+          <input type="number" id="breakpoint-min-width-input" min="0" max="5000" value="0" class="figma-input">
+          <span class="input-unit">px</span>
+        </div>
+      </div>
 
       <div class="section-divider"></div>
 
@@ -319,6 +396,37 @@
       });
     };
 
+    // Breakpoint-specific inputs
+    const breakpointNameInput = document.getElementById('breakpoint-name-input');
+    breakpointNameInput.addEventListener('input', (e) => {
+      const currentBp = gridState.config.breakpoints[gridState.currentBreakpointIndex];
+      if (currentBp) {
+        currentBp.name = e.target.value;
+        renderBreakpoints();
+        updateBreakpointName();
+        saveSettings();
+      }
+    });
+
+    const breakpointMinWidthInput = document.getElementById('breakpoint-min-width-input');
+    breakpointMinWidthInput.addEventListener('input', (e) => {
+      const currentBp = gridState.config.breakpoints[gridState.currentBreakpointIndex];
+      if (currentBp) {
+        const value = parseInt(e.target.value) || 0;
+        currentBp.minWidth = value;
+
+        // Re-sort breakpoints after changing min-width
+        gridState.config.breakpoints.sort((a, b) => a.minWidth - b.minWidth);
+
+        // Find new index after sorting
+        gridState.currentBreakpointIndex = gridState.config.breakpoints.indexOf(currentBp);
+
+        renderBreakpoints();
+        updateBreakpointName();
+        saveSettings();
+      }
+    });
+
     setupInput('grid-cols-input', 'columns');
     setupInput('grid-gutter-input', 'gutter');
     setupInput('grid-row-gap-input', 'rowGap');
@@ -411,11 +519,11 @@
   }
 
   function saveGridVisibility() {
-    chrome.storage.local.set({ gridVisible: gridState.gridVisible });
+    safeStorageSet({ gridVisible: gridState.gridVisible });
   }
 
   function loadGridVisibility() {
-    chrome.storage.local.get(['gridVisible'], (result) => {
+    safeStorageGet(['gridVisible'], (result) => {
       if (result.gridVisible !== undefined) {
         gridState.gridVisible = result.gridVisible;
         updateGridVisibility();
@@ -440,11 +548,11 @@
   }
 
   function saveIndicatorVisibility() {
-    chrome.storage.local.set({ indicatorVisible: gridState.indicatorVisible });
+    safeStorageSet({ indicatorVisible: gridState.indicatorVisible });
   }
 
   function loadIndicatorVisibility() {
-    chrome.storage.local.get(['indicatorVisible'], (result) => {
+    safeStorageGet(['indicatorVisible'], (result) => {
       if (result.indicatorVisible !== undefined) {
         gridState.indicatorVisible = result.indicatorVisible;
         updateIndicatorVisibility();
@@ -473,11 +581,11 @@
   }
 
   function saveModeState() {
-    chrome.storage.local.set({ editingMode: gridState.editingMode });
+    safeStorageSet({ editingMode: gridState.editingMode });
   }
 
   function loadModeState() {
-    chrome.storage.local.get(['editingMode'], (result) => {
+    safeStorageGet(['editingMode'], (result) => {
       if (result.editingMode !== undefined) {
         gridState.editingMode = result.editingMode;
         updateModeToggle();
@@ -500,11 +608,11 @@
   }
 
   function saveUIZoom() {
-    chrome.storage.local.set({ gridUIZoom: gridState.uiZoom });
+    safeStorageSet({ gridUIZoom: gridState.uiZoom });
   }
 
   function loadUIZoom() {
-    chrome.storage.local.get(['gridUIZoom'], (result) => {
+    safeStorageGet(['gridUIZoom'], (result) => {
       if (result.gridUIZoom) {
         gridState.uiZoom = result.gridUIZoom;
         applyUIZoom();
@@ -534,6 +642,14 @@
   }
 
   function updateInputValues() {
+    // Update breakpoint-specific fields
+    const currentBp = gridState.config.breakpoints[gridState.currentBreakpointIndex];
+    if (currentBp) {
+      document.getElementById('breakpoint-name-input').value = currentBp.name;
+      document.getElementById('breakpoint-min-width-input').value = currentBp.minWidth;
+    }
+
+    // Update grid settings
     document.getElementById('grid-cols-input').value = gridState.config.columns;
     document.getElementById('grid-gutter-input').value = gridState.config.gutter;
     document.getElementById('grid-margin-input').value = gridState.config.margin;
@@ -704,17 +820,18 @@
   }
 
   function addBreakpoint() {
-    const name = prompt('Breakpoint name:', 'Custom');
-    if (!name) return;
-
-    const minWidth = parseInt(prompt('Min width (px):', '1024'));
-    if (isNaN(minWidth)) return;
-
     saveCurrentBreakpoint();
+
+    // Use current viewport width as default min-width
+    const currentWidth = window.innerWidth;
+
+    // Generate a name based on the breakpoint count
+    const breakpointCount = gridState.config.breakpoints.length + 1;
+    const name = `Breakpoint ${breakpointCount}`;
 
     gridState.config.breakpoints.push({
       name: name,
-      minWidth: minWidth,
+      minWidth: currentWidth,
       columns: gridState.config.columns,
       gutter: gridState.config.gutter,
       margin: gridState.config.margin,
@@ -723,8 +840,15 @@
     gridState.config.breakpoints.sort((a, b) => a.minWidth - b.minWidth);
 
     // Find the index of the newly added breakpoint
-    const newIndex = gridState.config.breakpoints.findIndex(bp => bp.name === name && bp.minWidth === minWidth);
+    const newIndex = gridState.config.breakpoints.findIndex(bp => bp.name === name && bp.minWidth === currentWidth);
     gridState.currentBreakpointIndex = newIndex >= 0 ? newIndex : gridState.config.breakpoints.length - 1;
+
+    // Switch to editing mode
+    if (!gridState.editingMode) {
+      gridState.editingMode = true;
+      updateModeToggle();
+      saveModeState();
+    }
 
     renderBreakpoints();
     loadBreakpointSettings();
@@ -735,10 +859,10 @@
     const name = prompt('Preset name:');
     if (!name) return;
 
-    chrome.storage.local.get(['gridPresets'], (result) => {
+    safeStorageGet(['gridPresets'], (result) => {
       const presets = result.gridPresets || [];
       presets.push({ name, config: JSON.parse(JSON.stringify(gridState.config)) });
-      chrome.storage.local.set({ gridPresets: presets }, () => {
+      safeStorageSet({ gridPresets: presets }, () => {
         renderPresets();
       });
     });
@@ -778,7 +902,29 @@
         }
 
         gridState.config = JSON.parse(JSON.stringify(importData.config));
-        updateInputValues();
+
+        // Ensure rowGap exists in all breakpoints (backwards compatibility)
+        if (gridState.config.rowGap === undefined) {
+          gridState.config.rowGap = 8;
+        }
+        gridState.config.breakpoints.forEach(bp => {
+          if (bp.rowGap === undefined) {
+            bp.rowGap = 8;
+          }
+        });
+
+        // Set active breakpoint based on viewport width
+        if (gridState.editingMode) {
+          // In editing mode, keep current index if valid, otherwise use viewport-matching
+          if (gridState.currentBreakpointIndex >= gridState.config.breakpoints.length) {
+            gridState.currentBreakpointIndex = getViewportMatchingBreakpoint();
+          }
+        } else {
+          // In viewing mode, always use viewport-matching
+          gridState.currentBreakpointIndex = getViewportMatchingBreakpoint();
+        }
+
+        loadBreakpointSettings();
         renderBreakpoints();
         applyResponsiveBreakpoint();
         drawGrid();
@@ -795,7 +941,7 @@
   }
 
   function renderPresets() {
-    chrome.storage.local.get(['gridPresets'], (result) => {
+    safeStorageGet(['gridPresets'], (result) => {
       const presets = result.gridPresets || [];
       const list = document.getElementById('grid-presets-list');
       list.innerHTML = presets.map((preset, index) => `
@@ -804,23 +950,45 @@
           <button class="grid-preset-delete" data-index="${index}">Delete</button>
         </div>
       `).join('');
-      
+
       list.querySelectorAll('span').forEach(el => {
         el.addEventListener('click', () => {
           const preset = presets[el.dataset.index];
           gridState.config = JSON.parse(JSON.stringify(preset.config));
-          updateInputValues();
+
+          // Ensure rowGap exists in all breakpoints (backwards compatibility)
+          if (gridState.config.rowGap === undefined) {
+            gridState.config.rowGap = 8;
+          }
+          gridState.config.breakpoints.forEach(bp => {
+            if (bp.rowGap === undefined) {
+              bp.rowGap = 8;
+            }
+          });
+
+          // Set active breakpoint based on viewport width
+          if (gridState.editingMode) {
+            // In editing mode, keep current index if valid, otherwise use viewport-matching
+            if (gridState.currentBreakpointIndex >= gridState.config.breakpoints.length) {
+              gridState.currentBreakpointIndex = getViewportMatchingBreakpoint();
+            }
+          } else {
+            // In viewing mode, always use viewport-matching
+            gridState.currentBreakpointIndex = getViewportMatchingBreakpoint();
+          }
+
+          loadBreakpointSettings();
           renderBreakpoints();
           applyResponsiveBreakpoint();
           drawGrid();
           saveSettings();
         });
       });
-      
+
       list.querySelectorAll('.grid-preset-delete').forEach(btn => {
         btn.addEventListener('click', () => {
           presets.splice(btn.dataset.index, 1);
-          chrome.storage.local.set({ gridPresets: presets }, () => {
+          safeStorageSet({ gridPresets: presets }, () => {
             renderPresets();
           });
         });
@@ -829,14 +997,14 @@
   }
 
   function saveSettings() {
-    chrome.storage.local.set({
+    safeStorageSet({
       gridConfig: gridState.config,
       currentBreakpointIndex: gridState.currentBreakpointIndex
     });
   }
 
   function loadSettings() {
-    chrome.storage.local.get(['gridConfig', 'currentBreakpointIndex'], (result) => {
+    safeStorageGet(['gridConfig', 'currentBreakpointIndex'], (result) => {
       if (result.gridConfig) {
         gridState.config = result.gridConfig;
 
@@ -852,9 +1020,18 @@
           }
         });
       }
-      if (result.currentBreakpointIndex !== undefined) {
-        gridState.currentBreakpointIndex = result.currentBreakpointIndex;
+
+      // In viewing mode, always use viewport-matching breakpoint
+      // In editing mode, use saved index if available
+      if (gridState.editingMode) {
+        if (result.currentBreakpointIndex !== undefined) {
+          gridState.currentBreakpointIndex = result.currentBreakpointIndex;
+        }
+      } else {
+        // Viewing mode: auto-select based on viewport
+        gridState.currentBreakpointIndex = getViewportMatchingBreakpoint();
       }
+
       renderBreakpoints();
       loadBreakpointSettings();
       renderPresets();
@@ -875,7 +1052,7 @@
     } else {
       container.classList.remove('active');
     }
-    chrome.storage.local.set({ gridEnabled: enabled });
+    safeStorageSet({ gridEnabled: enabled });
   }
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
