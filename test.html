@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Overlay Extension - Test Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      padding: 20px;
+    }
+
+    /* Intentional CSS conflicts to test extension resilience */
+    .grid-overlay-container {
+      background: red !important;
+      z-index: 1 !important;
+    }
+
+    .grid-toggle-btn {
+      background: blue !important;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #34495e;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .test-section {
+      background: #f8f9fa;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .test-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .checklist li {
+      padding: 0.5rem 0;
+      padding-left: 2rem;
+      position: relative;
+    }
+
+    .checklist li:before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      font-size: 1.2rem;
+    }
+
+    code {
+      background: #f1f3f5;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    .tall-content {
+      min-height: 200vh;
+      background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Grid Overlay Extension - Test Page</h1>
+    <p>This page is designed to test all features of the Grid Overlay extension.</p>
+
+    <div class="test-section">
+      <h2>📋 Manual Test Checklist</h2>
+      <ul class="checklist">
+        <li>Extension loads without errors in console</li>
+        <li>Popup opens and displays correctly</li>
+        <li>Grid can be enabled/disabled via popup</li>
+        <li>Grid appears correctly on page</li>
+        <li>Keyboard shortcut <code>Ctrl+Shift+G</code> toggles grid visibility</li>
+        <li>Control panel can be opened via ☰ button</li>
+        <li>Control panel can be resized by dragging left edge</li>
+        <li>UI zoom controls work (50%-200%)</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>📐 Grid Settings Tests</h2>
+      <ul class="checklist">
+        <li>Column count can be changed (1-24)</li>
+        <li>Gutter spacing updates grid correctly</li>
+        <li>Margin updates grid correctly</li>
+        <li>Row gap displays correctly</li>
+        <li>Max width constraint works</li>
+        <li>Grid color picker works</li>
+        <li>Opacity slider works (0-100%)</li>
+        <li>All changes update grid in real-time</li>
+        <li>All settings persist after page reload</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>🎯 Breakpoint Tests</h2>
+      <ul class="checklist">
+        <li>Default breakpoints display correctly</li>
+        <li>Viewport indicator shows current width</li>
+        <li>Viewport indicator shows correct breakpoint name</li>
+        <li>Viewport indicator shows correct breakpoint range</li>
+        <li>Viewing mode auto-selects breakpoint on resize</li>
+        <li>Edit mode locks to selected breakpoint</li>
+        <li>Can add new custom breakpoints</li>
+        <li>Can edit breakpoint names</li>
+        <li>Can edit breakpoint min-width values</li>
+        <li>Can delete breakpoints (when more than 1 exists)</li>
+        <li>Breakpoints auto-sort by min-width</li>
+        <li>Each breakpoint stores unique settings</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>💾 Settings Management Tests</h2>
+      <ul class="checklist">
+        <li>Can save preset with custom name</li>
+        <li>Preset name is sanitized (no HTML/special chars)</li>
+        <li>Can load saved preset</li>
+        <li>Can delete preset</li>
+        <li>Can export settings as JSON</li>
+        <li>Can import settings from JSON</li>
+        <li>Import validates file format</li>
+        <li>Import handles old format (rowGap backwards compatibility)</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>🚀 Performance Tests</h2>
+      <ul class="checklist">
+        <li>Grid renders without lag</li>
+        <li>Resizing window is smooth</li>
+        <li>Scrolling is not affected by grid</li>
+        <li>Input changes don't cause excessive redraws</li>
+        <li>No memory leaks after toggling grid multiple times</li>
+        <li>MutationObserver doesn't cause performance issues</li>
+        <li>Extension doesn't break site functionality</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>🔒 Security Tests</h2>
+      <ul class="checklist">
+        <li>Preset names are sanitized (try: <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>)</li>
+        <li>Breakpoint names are sanitized</li>
+        <li>No XSS vulnerabilities in any input fields</li>
+        <li>Blob URLs are cleaned up after export</li>
+        <li>Extension context invalidation is handled gracefully</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>🎨 CSS Conflict Tests</h2>
+      <ul class="checklist">
+        <li>Grid overlay displays correctly despite conflicting styles on page</li>
+        <li>Control panel displays correctly</li>
+        <li>Toggle button displays correctly</li>
+        <li>Viewport indicator displays correctly</li>
+        <li>Z-index is high enough to appear above all page content</li>
+        <li>Positioning is not affected by page CSS</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>📱 Responsive Tests</h2>
+      <ul class="checklist">
+        <li>Grid works at 360px width (mobile)</li>
+        <li>Grid works at 768px width (tablet)</li>
+        <li>Grid works at 1024px width (desktop)</li>
+        <li>Grid works at 1440px+ width (wide desktop)</li>
+        <li>Grid extends full document height</li>
+        <li>Grid adjusts when page content changes</li>
+      </ul>
+    </div>
+
+    <div class="test-grid">
+      <div class="test-card">
+        <h3>Card 1</h3>
+        <p>Test grid alignment with card layouts.</p>
+      </div>
+      <div class="test-card">
+        <h3>Card 2</h3>
+        <p>Verify columns are evenly spaced.</p>
+      </div>
+      <div class="test-card">
+        <h3>Card 3</h3>
+        <p>Check gutter spacing is accurate.</p>
+      </div>
+    </div>
+
+    <div class="tall-content">
+      <h2>Tall Content Section</h2>
+      <p>This section has a height of 200vh to test grid rendering across the entire document height.</p>
+      <p>Scroll down to verify the grid columns extend all the way to the bottom of the page.</p>
+    </div>
+  </div>
+</body>
+</html>

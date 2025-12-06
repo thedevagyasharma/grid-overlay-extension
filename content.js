@@ -1,6 +1,68 @@
 (function() {
   'use strict';
 
+  // Constants
+  const CONSTANTS = {
+    RESIZE_MIN_WIDTH: 280,
+    RESIZE_MAX_WIDTH: 600,
+    ZOOM_MIN: 50,
+    ZOOM_MAX: 200,
+    ZOOM_STEP: 10,
+    DEBOUNCE_DELAY: 300,
+    MUTATION_DEBOUNCE_DELAY: 100,
+    MAX_PRESET_NAME_LENGTH: 50,
+    DEFAULT_ROW_GAP: 8,
+    Z_INDEX_CONTAINER: 2147483647,
+    Z_INDEX_INDICATOR: 2147483646
+  };
+
+  // Utility: Debounce function
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  // Utility: Sanitize HTML string
+  function sanitizeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Utility: Create element with properties
+  function createElement(tag, properties = {}, children = []) {
+    const element = document.createElement(tag);
+
+    Object.entries(properties).forEach(([key, value]) => {
+      if (key === 'className') {
+        element.className = value;
+      } else if (key === 'textContent') {
+        element.textContent = value;
+      } else if (key === 'style' && typeof value === 'object') {
+        Object.assign(element.style, value);
+      } else {
+        element.setAttribute(key, value);
+      }
+    });
+
+    children.forEach(child => {
+      if (typeof child === 'string') {
+        element.appendChild(document.createTextNode(child));
+      } else if (child) {
+        element.appendChild(child);
+      }
+    });
+
+    return element;
+  }
+
   // Check if extension context is valid
   function isExtensionContextValid() {
     try {
@@ -47,6 +109,30 @@
     }
   }
 
+  // Utility: Ensure backwards compatibility for rowGap
+  function ensureRowGapCompatibility(config) {
+    if (config.rowGap === undefined) {
+      config.rowGap = CONSTANTS.DEFAULT_ROW_GAP;
+    }
+    if (config.breakpoints) {
+      config.breakpoints.forEach(bp => {
+        if (bp.rowGap === undefined) {
+          bp.rowGap = CONSTANTS.DEFAULT_ROW_GAP;
+        }
+      });
+    }
+    return config;
+  }
+
+  // Utility: Validate and sanitize preset name
+  function sanitizePresetName(name) {
+    if (!name || typeof name !== 'string') return null;
+    // Remove HTML entities and limit length
+    const sanitized = sanitizeHTML(name.trim()).substring(0, CONSTANTS.MAX_PRESET_NAME_LENGTH);
+    // Only allow alphanumeric, spaces, dashes, underscores
+    return sanitized.replace(/[^a-zA-Z0-9\s\-_]/g, '');
+  }
+
   // Global error handler to catch any uncaught errors related to extension context
   window.addEventListener('error', (event) => {
     if (event.error && event.error.message && event.error.message.includes('Extension context invalidated')) {
@@ -85,6 +171,8 @@
 
   let container, canvas, ctx, controls, toggleBtn;
   let resizeObserver, mutationObserver;
+  let eventListeners = []; // Track listeners for cleanup
+  let blobUrls = []; // Track blob URLs for cleanup
 
   function init() {
     createElements();
@@ -108,27 +196,56 @@
     
     ctx = canvas.getContext('2d');
     
-    // Create viewport indicator
-    const viewportIndicator = document.createElement('div');
-    viewportIndicator.className = 'grid-viewport-indicator';
-    viewportIndicator.id = 'grid-viewport-indicator';
-    viewportIndicator.innerHTML = `
-      <span class="viewport-width" id="viewport-width">0px</span>
-      <span class="indicator-separator">•</span>
-      <span class="breakpoint-name" id="breakpoint-name">—</span>
-      <span class="breakpoint-range" id="breakpoint-range">—</span>
-      <span class="indicator-separator">•</span>
-      <span class="mode-status" id="mode-status">Viewing</span>
-    `;
+    // Create viewport indicator using DOM methods
+    const viewportIndicator = createElement('div', {
+      className: 'grid-viewport-indicator',
+      id: 'grid-viewport-indicator'
+    });
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'viewport-width',
+      id: 'viewport-width',
+      textContent: '0px'
+    }));
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'indicator-separator',
+      textContent: '•'
+    }));
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'breakpoint-name',
+      id: 'breakpoint-name',
+      textContent: '—'
+    }));
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'breakpoint-range',
+      id: 'breakpoint-range',
+      textContent: '—'
+    }));
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'indicator-separator',
+      textContent: '•'
+    }));
+
+    viewportIndicator.appendChild(createElement('span', {
+      className: 'mode-status',
+      id: 'mode-status',
+      textContent: 'Viewing'
+    }));
+
     container.appendChild(viewportIndicator);
-    
+
     controls = createControls();
     container.appendChild(controls);
-    
-    toggleBtn = document.createElement('button');
-    toggleBtn.className = 'grid-toggle-btn';
-    toggleBtn.innerHTML = '☰';
-    toggleBtn.title = 'Toggle grid controls';
+
+    toggleBtn = createElement('button', {
+      className: 'grid-toggle-btn',
+      textContent: '☰',
+      title: 'Toggle grid controls'
+    });
     container.appendChild(toggleBtn);
     
     document.body.appendChild(container);
@@ -140,13 +257,17 @@
     wrapper.className = 'grid-controls-wrapper';
 
     // Create resize handle
-    const resizeHandle = document.createElement('div');
-    resizeHandle.className = 'grid-resize-handle';
-    resizeHandle.innerHTML = '<div class="resize-handle-grip"></div>';
+    const resizeHandle = createElement('div', {
+      className: 'grid-resize-handle'
+    });
+    resizeHandle.appendChild(createElement('div', {
+      className: 'resize-handle-grip'
+    }));
 
     // Create scrollable content container
     const contentDiv = document.createElement('div');
     contentDiv.className = 'grid-overlay-controls';
+    // Note: innerHTML used here is safe as it contains only static HTML with no user input
     contentDiv.innerHTML = `
       <div class="grid-zoom-section">
         <label for="grid-zoom-label" class="zoom-section-label">UI Scaling Factor</label>
@@ -313,7 +434,7 @@
     const handleMouseMove = (e) => {
       if (!isResizing) return;
       const deltaX = startX - e.clientX;
-      const newWidth = Math.max(280, Math.min(600, startWidth + deltaX));
+      const newWidth = Math.max(CONSTANTS.RESIZE_MIN_WIDTH, Math.min(CONSTANTS.RESIZE_MAX_WIDTH, startWidth + deltaX));
       controls.style.width = newWidth + 'px';
       controls.style.setProperty('--controls-width', newWidth + 'px');
     };
@@ -367,16 +488,20 @@
 
     // Zoom controls
     document.getElementById('grid-zoom-in').addEventListener('click', () => {
-      gridState.uiZoom = Math.min(200, gridState.uiZoom + 10);
+      gridState.uiZoom = Math.min(CONSTANTS.ZOOM_MAX, gridState.uiZoom + CONSTANTS.ZOOM_STEP);
       applyUIZoom();
       saveUIZoom();
     });
 
     document.getElementById('grid-zoom-out').addEventListener('click', () => {
-      gridState.uiZoom = Math.max(50, gridState.uiZoom - 10);
+      gridState.uiZoom = Math.max(CONSTANTS.ZOOM_MIN, gridState.uiZoom - CONSTANTS.ZOOM_STEP);
       applyUIZoom();
       saveUIZoom();
     });
+
+    // Debounced save functions for better performance
+    const debouncedSaveSettings = debounce(saveSettings, CONSTANTS.DEBOUNCE_DELAY);
+    const debouncedSaveCurrentBreakpoint = debounce(saveCurrentBreakpoint, CONSTANTS.DEBOUNCE_DELAY);
 
     // Setup unified input fields with autosave to current breakpoint
     const setupInput = (inputId, configKey, isOpacity = false) => {
@@ -386,25 +511,30 @@
         const value = parseInt(e.target.value) || 0;
         gridState.config[configKey] = isOpacity ? value / 100 : value;
 
-        // Autosave to current breakpoint for breakpoint-specific settings
+        // Immediate visual feedback
+        drawGrid();
+
+        // Autosave to current breakpoint for breakpoint-specific settings (debounced)
         if (['columns', 'gutter', 'rowGap', 'margin'].includes(configKey)) {
-          saveCurrentBreakpoint();
+          debouncedSaveCurrentBreakpoint();
         }
 
-        drawGrid();
-        saveSettings();
+        // Debounced save to prevent excessive storage writes
+        debouncedSaveSettings();
       });
     };
 
-    // Breakpoint-specific inputs
+    // Breakpoint-specific inputs with debounced saving
     const breakpointNameInput = document.getElementById('breakpoint-name-input');
     breakpointNameInput.addEventListener('input', (e) => {
       const currentBp = gridState.config.breakpoints[gridState.currentBreakpointIndex];
       if (currentBp) {
-        currentBp.name = e.target.value;
+        // Sanitize input
+        const sanitized = sanitizeHTML(e.target.value);
+        currentBp.name = sanitized;
         renderBreakpoints();
         updateBreakpointName();
-        saveSettings();
+        debouncedSaveSettings();
       }
     });
 
@@ -423,7 +553,7 @@
 
         renderBreakpoints();
         updateBreakpointName();
-        saveSettings();
+        debouncedSaveSettings();
       }
     });
 
@@ -464,37 +594,45 @@
     });
     document.getElementById('grid-import-file').addEventListener('change', importSettings);
 
+    // Debounced handlers for better performance
+    const debouncedUpdateCanvas = debounce(updateCanvasPosition, CONSTANTS.MUTATION_DEBOUNCE_DELAY);
+
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', updateCanvasPosition);
-    
+
     resizeObserver = new ResizeObserver(() => {
       updateCanvasPosition();
-      drawGrid();
+      // drawGrid() is already called by updateCanvasPosition()
     });
     resizeObserver.observe(document.body);
-    
-    mutationObserver = new MutationObserver(() => {
-      updateCanvasPosition();
+
+    // Optimized MutationObserver with debouncing and limited scope
+    mutationObserver = new MutationObserver(debouncedUpdateCanvas);
+    mutationObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: false, // Only watch direct children of documentElement
+      attributes: true,
+      attributeFilter: ['style'] // Only watch style changes
     });
     mutationObserver.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: false, // Only watch direct children of body
       attributes: true,
-      attributeFilter: ['style', 'class']
+      attributeFilter: ['style'] // Only watch style changes
     });
     
     updateViewportWidth();
   }
 
   function handleResize() {
-    updateCanvasPosition();
+    updateCanvasPosition(); // This already calls drawGrid()
     updateViewportWidth();
     if (!gridState.editingMode) {
       // In viewing mode, auto-select breakpoint based on viewport
       autoSelectBreakpoint();
     }
     applyResponsiveBreakpoint();
-    drawGrid();
+    // Note: drawGrid() is called by updateCanvasPosition(), no need to call again
   }
 
   function updateViewportWidth() {
@@ -645,25 +783,37 @@
     // Update breakpoint-specific fields
     const currentBp = gridState.config.breakpoints[gridState.currentBreakpointIndex];
     if (currentBp) {
-      document.getElementById('breakpoint-name-input').value = currentBp.name;
-      document.getElementById('breakpoint-min-width-input').value = currentBp.minWidth;
+      const nameInput = document.getElementById('breakpoint-name-input');
+      const minWidthInput = document.getElementById('breakpoint-min-width-input');
+      if (nameInput) nameInput.value = currentBp.name;
+      if (minWidthInput) minWidthInput.value = currentBp.minWidth;
     }
 
-    // Update grid settings
-    document.getElementById('grid-cols-input').value = gridState.config.columns;
-    document.getElementById('grid-gutter-input').value = gridState.config.gutter;
-    document.getElementById('grid-margin-input').value = gridState.config.margin;
-    document.getElementById('grid-row-gap-input').value = gridState.config.rowGap !== undefined ? gridState.config.rowGap : 8;
-    document.getElementById('grid-max-width-input').value = gridState.config.maxWidth;
-    document.getElementById('grid-color').value = gridState.config.color;
+    // Update grid settings with guard clauses
+    const colsInput = document.getElementById('grid-cols-input');
+    const gutterInput = document.getElementById('grid-gutter-input');
+    const marginInput = document.getElementById('grid-margin-input');
+    const rowGapInput = document.getElementById('grid-row-gap-input');
+    const maxWidthInput = document.getElementById('grid-max-width-input');
+    const colorInput = document.getElementById('grid-color');
+    const opacityInput = document.getElementById('grid-opacity-input');
+
+    if (colsInput) colsInput.value = gridState.config.columns;
+    if (gutterInput) gutterInput.value = gridState.config.gutter;
+    if (marginInput) marginInput.value = gridState.config.margin;
+    if (rowGapInput) rowGapInput.value = gridState.config.rowGap !== undefined ? gridState.config.rowGap : CONSTANTS.DEFAULT_ROW_GAP;
+    if (maxWidthInput) maxWidthInput.value = gridState.config.maxWidth;
+    if (colorInput) colorInput.value = gridState.config.color;
 
     const colorSwatch = document.getElementById('grid-color-swatch');
     if (colorSwatch) {
       colorSwatch.style.backgroundColor = gridState.config.color;
     }
 
-    const opacityPercent = Math.round(gridState.config.opacity * 100);
-    document.getElementById('grid-opacity-input').value = opacityPercent;
+    if (opacityInput) {
+      const opacityPercent = Math.round(gridState.config.opacity * 100);
+      opacityInput.value = opacityPercent;
+    }
 
     updateViewportWidth();
   }
@@ -703,16 +853,55 @@
 
   function renderBreakpoints() {
     const selector = document.getElementById('breakpoint-selector');
+    if (!selector) return;
+
     const viewportMatchingIndex = getViewportMatchingBreakpoint();
 
-    selector.innerHTML = gridState.config.breakpoints.map((bp, index) => `
-      <div class="breakpoint-chip ${index === gridState.currentBreakpointIndex ? 'editing' : ''} ${index === viewportMatchingIndex ? 'viewport-match' : ''}" data-index="${index}">
-        ${index === viewportMatchingIndex ? '<span class="viewport-match-icon">◆</span>' : ''}
-        <span class="breakpoint-chip-name">${bp.name}</span>
-        <span class="breakpoint-chip-width">${bp.minWidth}px</span>
-        ${gridState.config.breakpoints.length > 1 ? `<button class="breakpoint-chip-delete" data-index="${index}">×</button>` : ''}
-      </div>
-    `).join('');
+    // Clear existing content
+    selector.innerHTML = '';
+
+    // Create breakpoint chips using DOM methods
+    gridState.config.breakpoints.forEach((bp, index) => {
+      const chip = createElement('div', {
+        className: `breakpoint-chip ${index === gridState.currentBreakpointIndex ? 'editing' : ''} ${index === viewportMatchingIndex ? 'viewport-match' : ''}`,
+        'data-index': index
+      });
+
+      // Add viewport match icon if applicable
+      if (index === viewportMatchingIndex) {
+        const icon = createElement('span', {
+          className: 'viewport-match-icon',
+          textContent: '◆'
+        });
+        chip.appendChild(icon);
+      }
+
+      // Add breakpoint name (sanitized)
+      const nameSpan = createElement('span', {
+        className: 'breakpoint-chip-name',
+        textContent: sanitizeHTML(bp.name)
+      });
+      chip.appendChild(nameSpan);
+
+      // Add breakpoint width
+      const widthSpan = createElement('span', {
+        className: 'breakpoint-chip-width',
+        textContent: `${bp.minWidth}px`
+      });
+      chip.appendChild(widthSpan);
+
+      // Add delete button if more than one breakpoint exists
+      if (gridState.config.breakpoints.length > 1) {
+        const deleteBtn = createElement('button', {
+          className: 'breakpoint-chip-delete',
+          'data-index': index,
+          textContent: '×'
+        });
+        chip.appendChild(deleteBtn);
+      }
+
+      selector.appendChild(chip);
+    });
 
     // Add click handlers for selecting breakpoints
     selector.querySelectorAll('.breakpoint-chip').forEach((chip, index) => {
@@ -859,9 +1048,16 @@
     const name = prompt('Preset name:');
     if (!name) return;
 
+    // Sanitize and validate preset name
+    const sanitizedName = sanitizePresetName(name);
+    if (!sanitizedName) {
+      alert('Invalid preset name. Please use only letters, numbers, spaces, dashes, and underscores.');
+      return;
+    }
+
     safeStorageGet(['gridPresets'], (result) => {
       const presets = result.gridPresets || [];
-      presets.push({ name, config: JSON.parse(JSON.stringify(gridState.config)) });
+      presets.push({ name: sanitizedName, config: JSON.parse(JSON.stringify(gridState.config)) });
       safeStorageSet({ gridPresets: presets }, () => {
         renderPresets();
       });
@@ -878,13 +1074,22 @@
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
+
+    // Track blob URL for cleanup
+    blobUrls.push(url);
+
     const link = document.createElement('a');
     link.href = url;
     link.download = `grid-overlay-settings-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+
+    // Cleanup blob URL after a short delay
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      blobUrls = blobUrls.filter(u => u !== url);
+    }, 100);
   }
 
   function importSettings(event) {
@@ -903,15 +1108,8 @@
 
         gridState.config = JSON.parse(JSON.stringify(importData.config));
 
-        // Ensure rowGap exists in all breakpoints (backwards compatibility)
-        if (gridState.config.rowGap === undefined) {
-          gridState.config.rowGap = 8;
-        }
-        gridState.config.breakpoints.forEach(bp => {
-          if (bp.rowGap === undefined) {
-            bp.rowGap = 8;
-          }
-        });
+        // Ensure backwards compatibility
+        ensureRowGapCompatibility(gridState.config);
 
         // Set active breakpoint based on viewport width
         if (gridState.editingMode) {
@@ -944,27 +1142,42 @@
     safeStorageGet(['gridPresets'], (result) => {
       const presets = result.gridPresets || [];
       const list = document.getElementById('grid-presets-list');
-      list.innerHTML = presets.map((preset, index) => `
-        <div class="grid-preset-item">
-          <span data-index="${index}">${preset.name}</span>
-          <button class="grid-preset-delete" data-index="${index}">Delete</button>
-        </div>
-      `).join('');
+      if (!list) return;
+
+      // Clear existing content
+      list.innerHTML = '';
+
+      // Create preset items using DOM methods
+      presets.forEach((preset, index) => {
+        const item = createElement('div', {
+          className: 'grid-preset-item'
+        });
+
+        // Create preset name span (sanitized)
+        const nameSpan = createElement('span', {
+          'data-index': index,
+          textContent: sanitizeHTML(preset.name)
+        });
+        item.appendChild(nameSpan);
+
+        // Create delete button
+        const deleteBtn = createElement('button', {
+          className: 'grid-preset-delete',
+          'data-index': index,
+          textContent: 'Delete'
+        });
+        item.appendChild(deleteBtn);
+
+        list.appendChild(item);
+      });
 
       list.querySelectorAll('span').forEach(el => {
         el.addEventListener('click', () => {
           const preset = presets[el.dataset.index];
           gridState.config = JSON.parse(JSON.stringify(preset.config));
 
-          // Ensure rowGap exists in all breakpoints (backwards compatibility)
-          if (gridState.config.rowGap === undefined) {
-            gridState.config.rowGap = 8;
-          }
-          gridState.config.breakpoints.forEach(bp => {
-            if (bp.rowGap === undefined) {
-              bp.rowGap = 8;
-            }
-          });
+          // Ensure backwards compatibility
+          ensureRowGapCompatibility(gridState.config);
 
           // Set active breakpoint based on viewport width
           if (gridState.editingMode) {
@@ -1008,17 +1221,8 @@
       if (result.gridConfig) {
         gridState.config = result.gridConfig;
 
-        // Ensure rowGap exists (for backwards compatibility)
-        if (gridState.config.rowGap === undefined) {
-          gridState.config.rowGap = 8;
-        }
-
-        // Ensure each breakpoint has rowGap
-        gridState.config.breakpoints.forEach(bp => {
-          if (bp.rowGap === undefined) {
-            bp.rowGap = 8;
-          }
-        });
+        // Ensure backwards compatibility
+        ensureRowGapCompatibility(gridState.config);
       }
 
       // In viewing mode, always use viewport-matching breakpoint
@@ -1042,6 +1246,22 @@
     loadModeState();
   }
 
+  function cleanup() {
+    // Disconnect observers
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+    }
+    if (mutationObserver) {
+      mutationObserver.disconnect();
+    }
+
+    // Cleanup blob URLs
+    blobUrls.forEach(url => URL.revokeObjectURL(url));
+    blobUrls = [];
+
+    // Note: Event listeners are automatically cleaned up when elements are removed from DOM
+  }
+
   function toggleGrid(enabled) {
     gridState.enabled = enabled;
     if (enabled) {
@@ -1049,8 +1269,31 @@
       updateCanvasPosition();
       applyResponsiveBreakpoint();
       drawGrid();
+
+      // Reconnect mutation observer when re-enabling
+      if (mutationObserver) {
+        const debouncedUpdateCanvas = debounce(updateCanvasPosition, CONSTANTS.MUTATION_DEBOUNCE_DELAY);
+        mutationObserver.disconnect();
+        mutationObserver = new MutationObserver(debouncedUpdateCanvas);
+        mutationObserver.observe(document.documentElement, {
+          childList: true,
+          subtree: false,
+          attributes: true,
+          attributeFilter: ['style']
+        });
+        mutationObserver.observe(document.body, {
+          childList: true,
+          subtree: false,
+          attributes: true,
+          attributeFilter: ['style']
+        });
+      }
     } else {
       container.classList.remove('active');
+      // Disconnect observers when grid is hidden to save resources
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+      }
     }
     safeStorageSet({ gridEnabled: enabled });
   }
