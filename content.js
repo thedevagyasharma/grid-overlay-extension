@@ -413,7 +413,7 @@
 
   function setupListeners() {
     toggleBtn.addEventListener('click', () => {
-      controls.style.display = controls.style.display === 'none' ? 'flex' : 'none';
+      controls.classList.toggle('minimized');
     });
 
     // Left-edge resize functionality
@@ -649,10 +649,10 @@
     const toggle = document.getElementById('grid-visibility-toggle');
     if (gridState.gridVisible) {
       toggle.classList.add('active');
-      canvas.style.display = 'block';
+      container.classList.add('active');
     } else {
       toggle.classList.remove('active');
-      canvas.style.display = 'none';
+      container.classList.remove('active');
     }
   }
 
@@ -675,12 +675,12 @@
     if (gridState.indicatorVisible) {
       toggle.classList.add('active');
       if (indicator) {
-        indicator.style.display = 'flex';
+        indicator.classList.remove('hidden');
       }
     } else {
       toggle.classList.remove('active');
       if (indicator) {
-        indicator.style.display = 'none';
+        indicator.classList.add('hidden');
       }
     }
   }
