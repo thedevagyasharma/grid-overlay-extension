@@ -549,16 +549,12 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   z-index: var(--go-ext-z-index-indicator) !important;
-  display: none !important;
+  display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 12px;
   white-space: nowrap;
   min-width: fit-content;
-}
-
-.grid-overlay-container.active .grid-viewport-indicator {
-  display: flex !important;
 }
 
 .grid-viewport-indicator.hidden {

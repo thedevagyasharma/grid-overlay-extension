@@ -189,14 +189,16 @@
   function createElements() {
     container = document.createElement('div');
     container.className = 'grid-overlay-container';
-    
+
     canvas = document.createElement('canvas');
     canvas.className = 'grid-overlay-canvas';
     container.appendChild(canvas);
-    
+
     ctx = canvas.getContext('2d');
-    
-    // Create viewport indicator using DOM methods
+
+    document.body.appendChild(container);
+
+    // Create viewport indicator using DOM methods (separate from container)
     const viewportIndicator = createElement('div', {
       className: 'grid-viewport-indicator',
       id: 'grid-viewport-indicator'
@@ -236,19 +238,17 @@
       textContent: 'Viewing'
     }));
 
-    container.appendChild(viewportIndicator);
+    document.body.appendChild(viewportIndicator);
 
     controls = createControls();
-    container.appendChild(controls);
+    document.body.appendChild(controls);
 
     toggleBtn = createElement('button', {
       className: 'grid-toggle-btn',
       textContent: '☰',
       title: 'Toggle grid controls'
     });
-    container.appendChild(toggleBtn);
-    
-    document.body.appendChild(container);
+    document.body.appendChild(toggleBtn);
   }
 
   function createControls() {
