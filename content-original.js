@@ -153,18 +153,18 @@
       columns: 3,
       gutter: 8,
       margin: 16,
-      rowGap: 0,
+      rowGap: 8,
       color: '#ff0000',
       opacity: 0.15,
       maxWidth: 1200,
       breakpoints: [
-        { name: 'xxs', minWidth: 0, columns: 3, gutter: 8, margin: 16, rowGap: 0 },
-        { name: 'xs', minWidth: 360, columns: 4, gutter: 12, margin: 16, rowGap: 0 },
-        { name: 'sm', minWidth: 550, columns: 6, gutter: 16, margin: 24, rowGap: 0 },
-        { name: 'md', minWidth: 768, columns: 8, gutter: 16, margin: 32, rowGap: 0 },
-        { name: 'lg', minWidth: 992, columns: 12, gutter: 16, margin: 48, rowGap: 0 },
-        { name: 'xl', minWidth: 1200, columns: 12, gutter: 20, margin: 48, rowGap: 0 },
-        { name: 'xxl', minWidth: 1440, columns: 12, gutter: 24, margin: 64, rowGap: 0 }
+        { name: 'xxs', minWidth: 0, columns: 3, gutter: 8, margin: 16, rowGap: 8 },
+        { name: 'xs', minWidth: 360, columns: 4, gutter: 12, margin: 16, rowGap: 8 },
+        { name: 'sm', minWidth: 550, columns: 6, gutter: 16, margin: 24, rowGap: 8 },
+        { name: 'md', minWidth: 768, columns: 8, gutter: 16, margin: 32, rowGap: 8 },
+        { name: 'lg', minWidth: 992, columns: 12, gutter: 16, margin: 48, rowGap: 8 },
+        { name: 'xl', minWidth: 1200, columns: 12, gutter: 20, margin: 48, rowGap: 8 },
+        { name: 'xxl', minWidth: 1440, columns: 12, gutter: 24, margin: 64, rowGap: 8 }
       ]
     }
   };
