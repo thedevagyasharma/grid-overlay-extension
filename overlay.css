@@ -425,20 +425,29 @@
   border-radius: 99rem;
   color: #fff;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 28px;
+  line-height: 1;
   pointer-events: auto !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   backdrop-filter: blur(10px);
   z-index: var(--go-ext-z-index-container) !important;
+  user-select: none;
 }
 
 .grid-toggle-btn:hover {
   background: rgba(0, 0, 0, 1);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+.grid-toggle-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Breakpoint selector buttons */

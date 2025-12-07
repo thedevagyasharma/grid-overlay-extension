@@ -245,7 +245,7 @@
 
     toggleBtn = createElement('button', {
       className: 'grid-toggle-btn',
-      textContent: '☰',
+      textContent: '×', // Start with cross since controls are visible by default
       title: 'Toggle grid controls'
     });
     document.body.appendChild(toggleBtn);
@@ -414,6 +414,12 @@
   function setupListeners() {
     toggleBtn.addEventListener('click', () => {
       controls.classList.toggle('minimized');
+      // Update icon based on state
+      if (controls.classList.contains('minimized')) {
+        toggleBtn.textContent = '☰'; // Hamburger when closed
+      } else {
+        toggleBtn.textContent = '×'; // Cross when open
+      }
     });
 
     // Left-edge resize functionality
