@@ -424,38 +424,40 @@
 
     // Left-edge resize functionality
     const resizeHandle = controls.querySelector('.grid-resize-handle');
-    let isResizing = false;
-    let startX = 0;
-    let startWidth = 0;
+    if (resizeHandle) {
+      let isResizing = false;
+      let startX = 0;
+      let startWidth = 0;
 
-    const handleMouseDown = (e) => {
-      isResizing = true;
-      startX = e.clientX;
-      startWidth = controls.offsetWidth;
-      document.body.style.cursor = 'ew-resize';
-      document.body.style.userSelect = 'none';
-      e.preventDefault();
-    };
+      const handleMouseDown = (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = controls.offsetWidth;
+        document.body.style.cursor = 'ew-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+      };
 
-    const handleMouseMove = (e) => {
-      if (!isResizing) return;
-      const deltaX = startX - e.clientX;
-      const newWidth = Math.max(CONSTANTS.RESIZE_MIN_WIDTH, Math.min(CONSTANTS.RESIZE_MAX_WIDTH, startWidth + deltaX));
-      controls.style.width = newWidth + 'px';
-      controls.style.setProperty('--controls-width', newWidth + 'px');
-    };
+      const handleMouseMove = (e) => {
+        if (!isResizing) return;
+        const deltaX = startX - e.clientX;
+        const newWidth = Math.max(CONSTANTS.RESIZE_MIN_WIDTH, Math.min(CONSTANTS.RESIZE_MAX_WIDTH, startWidth + deltaX));
+        controls.style.width = newWidth + 'px';
+        controls.style.setProperty('--controls-width', newWidth + 'px');
+      };
 
-    const handleMouseUp = () => {
-      if (isResizing) {
-        isResizing = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-      }
-    };
+      const handleMouseUp = () => {
+        if (isResizing) {
+          isResizing = false;
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+        }
+      };
 
-    resizeHandle.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+      resizeHandle.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
 
     // Grid visibility toggle
     document.getElementById('grid-visibility-toggle').addEventListener('click', () => {
