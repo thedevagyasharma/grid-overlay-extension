@@ -549,6 +549,8 @@
   flex-direction: row !important;
   align-items: center !important;
   gap: 12px;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .grid-overlay-container.active .grid-viewport-indicator {
