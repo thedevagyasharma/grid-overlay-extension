@@ -1,0 +1,26 @@
+# Build artifacts
+dist/
+*.zip
+
+# Build and packaging scripts
+modules/
+build-modular.js
+package-extension.ps1
+*.ps1
+
+# Landing page (local only)
+landing-page/
+
+# Development files
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
