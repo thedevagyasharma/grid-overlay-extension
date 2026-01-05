@@ -1,0 +1,122 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for changelog generation
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Extract version from tag
+        id: get_version
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Validate version matches manifest
+        shell: bash
+        run: node .github/scripts/validate-version.js ${{ steps.get_version.outputs.version }}
+
+      - name: Build extension
+        shell: bash
+        run: node build-modular.js
+
+      - name: Package extension
+        shell: pwsh
+        run: |
+          .\package-extension.ps1
+
+      - name: Generate SHA256 checksum
+        shell: pwsh
+        run: |
+          $version = "${{ steps.get_version.outputs.version }}"
+          $zipFile = "grid-overlay-extension-v$version.zip"
+          $hash = Get-FileHash -Path $zipFile -Algorithm SHA256
+          $hash.Hash + "  " + $zipFile | Out-File -FilePath "$zipFile.sha256" -Encoding ASCII
+
+      - name: Get previous tag
+        id: previous_tag
+        shell: bash
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        shell: bash
+        run: |
+          PREV_TAG="${{ steps.previous_tag.outputs.previous_tag }}"
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, using all commits"
+            CHANGELOG=$(node .github/scripts/generate-changelog.js "")
+          else
+            CHANGELOG=$(node .github/scripts/generate-changelog.js "$PREV_TAG")
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Grid Overlay Extension ${{ steps.get_version.outputs.tag }}
+          body: |
+            ## Installation
+
+            ### Quick Install
+            1. Download: `grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip`
+            2. Extract to a folder
+            3. Open `chrome://extensions` in Chrome
+            4. Enable **Developer mode** (top-right toggle)
+            5. Click **Load unpacked**
+            6. Select the extracted folder
+
+            ### Verify Integrity
+            SHA256 checksum provided in release assets. To verify:
+            ```bash
+            # Windows PowerShell
+            Get-FileHash grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip -Algorithm SHA256
+
+            # Linux/Mac
+            sha256sum grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip
+            ```
+
+            Compare the output with the checksum in `grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip.sha256`
+
+            ### First Run
+            - Click the extension icon in your Chrome toolbar
+            - The grid overlay is ready to use
+            - See the [README](https://github.com/${{ github.repository }}/blob/main/README.md) for usage instructions
+
+            ---
+
+            ## What's Changed
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.previous_tag.outputs.previous_tag }}...${{ steps.get_version.outputs.tag }}
+          files: |
+            grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip
+            grid-overlay-extension-v${{ steps.get_version.outputs.version }}.zip.sha256
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

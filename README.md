@@ -52,17 +52,31 @@ A powerful Chrome extension that brings Figma-style layout grids to the web. Per
 
 ## 🚀 Installation
 
-### From Chrome Web Store
+### Option 1: Download from GitHub Releases (Recommended)
+
+1. Go to the [**Releases page**](https://github.com/thedevagyasharma/grid-overlay-extension/releases)
+2. Download the latest `.zip` file (e.g., `grid-overlay-extension-v1.1.0.zip`)
+3. Extract the ZIP file to a permanent location
+4. Open Chrome and navigate to `chrome://extensions/`
+5. Enable **"Developer mode"** (toggle in top-right corner)
+6. Click **"Load unpacked"**
+7. Select the extracted folder (the one containing `manifest.json`)
+8. The extension is now installed!
+
+**See [INSTALLATION.md](INSTALLATION.md) for detailed step-by-step instructions with troubleshooting.**
+
+### Option 2: From Chrome Web Store
 *(Coming soon - in review)*
 
-### Manual Installation (Developer Mode)
+### Option 3: Clone from Source
 
-1. **Download** or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable **"Developer mode"** (toggle in top-right corner)
-4. Click **"Load unpacked"**
-5. Select the extension directory
-6. Click the extension icon to start using Grid Overlay!
+1. Clone this repository: `git clone https://github.com/thedevagyasharma/grid-overlay-extension.git`
+2. Run the build script: `node build-modular.js`
+3. Open Chrome and navigate to `chrome://extensions/`
+4. Enable **"Developer mode"** (toggle in top-right corner)
+5. Click **"Load unpacked"**
+6. Select the extension directory
+7. Click the extension icon to start using Grid Overlay!
 
 ---
 
@@ -301,9 +315,10 @@ MIT License - Free to use, modify, and distribute
 
 ## 💬 Support
 
-- **Documentation**: See [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) for Chrome Web Store publishing
-- **Issues**: Report bugs on GitHub
-- **Updates**: Watch this repository for new releases
+- **Installation Help**: See [INSTALLATION.md](INSTALLATION.md) for detailed installation instructions
+- **Issues**: Report bugs on [GitHub Issues](https://github.com/thedevagyasharma/grid-overlay-extension/issues)
+- **Updates**: Check the [Releases page](https://github.com/thedevagyasharma/grid-overlay-extension/releases) for new versions
+- **Changelog**: See [CHANGELOG.md](CHANGELOG.md) for version history
 
 ---
 
