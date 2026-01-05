@@ -35,10 +35,6 @@ jobs:
         shell: bash
         run: node .github/scripts/validate-version.js ${{ steps.get_version.outputs.version }}
 
-      - name: Build extension
-        shell: bash
-        run: node build-modular.js
-
       - name: Package extension
         shell: pwsh
         run: |
