@@ -2,11 +2,8 @@
 dist/
 *.zip
 
-# Build and packaging scripts
+# Source modules (bundled into content.js by build-modular.js)
 modules/
-build-modular.js
-package-extension.ps1
-*.ps1
 
 # Landing page (local only)
 landing-page/
