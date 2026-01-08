@@ -1,0 +1,915 @@
+/**
+ * Grid Overlay Extension - Main Styles
+ * Using Tailwind CSS Color System
+ */
+
+/* ===== CSS Variables ===== */
+:root {
+  --go-ext-z-index-container: 2147483647;
+  --go-ext-z-index-indicator: 2147483646;
+
+  /* Tailwind Colors */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+
+  /* Scaled down sizes */
+  --control-height: 32px;
+  --icon-button-size: 32px;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  --color-slate-900: #0f172a;
+
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+}
+
+/* ===== Base Styles ===== */
+.go-ext-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: var(--go-ext-z-index-container);
+  display: none;
+}
+
+.go-ext-container.go-ext-active {
+  display: block;
+}
+
+.go-ext-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ===== Main Controls Panel ===== */
+.go-ext-controls-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 360px;
+  max-height: calc(100vh - 40px);
+  pointer-events: auto;
+  z-index: var(--go-ext-z-index-container);
+  display: flex;
+  gap: 0;
+}
+
+.go-ext-controls {
+  flex: 1;
+  background: var(--color-neutral-900);
+  color: white;
+  border-radius: 16px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.go-ext-controls::-webkit-scrollbar {
+  width: 6px;
+}
+
+.go-ext-controls::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* ===== Screen Base Styles ===== */
+.go-ext-screen {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 24px;
+}
+
+.go-ext-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.go-ext-screen-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.go-ext-screen-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-neutral-800);
+  margin-top: auto;
+}
+
+.go-ext-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  margin: 0 0 12px 0;
+}
+
+/* ===== Presets Screen ===== */
+.go-ext-presets-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.go-ext-presets-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.go-ext-preset-card {
+  background: var(--color-neutral-800);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.go-ext-preset-card:hover {
+  background: var(--color-neutral-700);
+  border-color: var(--color-neutral-600);
+}
+
+.go-ext-preset-card-new {
+  border: 1px dashed var(--color-neutral-700);
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 8px;
+  color: var(--color-neutral-500);
+}
+
+.go-ext-preset-card-new:hover {
+  border-color: var(--color-neutral-600);
+  background: var(--color-neutral-900);
+  color: white;
+}
+
+.go-ext-preset-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.go-ext-preset-card-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.go-ext-preset-card-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.go-ext-preset-card-count {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--color-neutral-500);
+}
+
+/* ===== Breakpoints Screen ===== */
+.go-ext-breakpoints-header {
+  justify-content: space-between;
+}
+
+.go-ext-breakpoints-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.go-ext-breakpoints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.go-ext-breakpoint-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-neutral-800);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: all 0.2s;
+}
+
+.go-ext-breakpoint-item-active {
+  background: var(--color-slate-900);
+  border-color: var(--color-blue-500);
+}
+
+.go-ext-breakpoint-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.go-ext-breakpoint-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-blue-500);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.go-ext-breakpoint-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.go-ext-breakpoint-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-neutral-300);
+}
+
+.go-ext-breakpoint-item-active .go-ext-breakpoint-name {
+  color: var(--color-blue-500);
+}
+
+.go-ext-breakpoint-meta {
+  font-size: 12px;
+  color: var(--color-neutral-500);
+}
+
+.go-ext-breakpoint-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  background: var(--color-neutral-700);
+  border-radius: 6px;
+  border: 1px solid var(--color-neutral-600);
+  overflow: hidden;
+}
+
+.go-ext-add-breakpoint-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--color-neutral-700);
+  border-radius: 8px;
+  color: var(--color-neutral-500);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.go-ext-add-breakpoint-btn:hover {
+  border-color: var(--color-neutral-600);
+  background: var(--color-neutral-900);
+  color: white;
+}
+
+.go-ext-empty-state {
+  text-align: center;
+  color: var(--color-neutral-500);
+  padding: 32px;
+  font-size: 14px;
+}
+
+/* ===== Colors Section ===== */
+.go-ext-colors-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.go-ext-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* ===== Color Picker Component ===== */
+.go-ext-color-picker-container {
+  position: relative;
+}
+
+.go-ext-color-picker-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--color-neutral-800);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.go-ext-color-picker-button:hover {
+  background: var(--color-neutral-700);
+  border-color: var(--color-neutral-600);
+}
+
+.go-ext-color-picker-label {
+  flex: 1;
+  text-align: left;
+}
+
+.go-ext-color-picker-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--color-neutral-600);
+  flex-shrink: 0;
+}
+
+.go-ext-color-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.go-ext-color-picker-gradient {
+  width: 100%;
+  height: 160px;
+  border-radius: 8px;
+  cursor: crosshair;
+}
+
+.go-ext-color-picker-hue-slider {
+  width: 100%;
+  height: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right,
+    hsl(0, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.go-ext-color-picker-hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-hue-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-opacity-container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.go-ext-color-picker-opacity-label {
+  font-size: 12px;
+  color: var(--color-neutral-400);
+  font-weight: 500;
+}
+
+.go-ext-color-picker-opacity-slider {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, transparent, white);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.go-ext-color-picker-opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-opacity-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-opacity-value {
+  font-size: 12px;
+  color: white;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+}
+
+.go-ext-color-picker-hex-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.go-ext-color-picker-hex-label {
+  font-size: 12px;
+  color: var(--color-neutral-400);
+  font-weight: 500;
+}
+
+.go-ext-color-picker-hex-input {
+  padding: 8px 12px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+}
+
+.go-ext-color-picker-hex-input:focus {
+  outline: none;
+  border-color: var(--color-blue-500);
+}
+
+/* ===== Icon Button ===== */
+.go-ext-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-neutral-800);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.go-ext-icon-button:hover {
+  background: var(--color-neutral-700);
+  color: white;
+}
+
+.go-ext-icon-button-active {
+  background: var(--color-slate-900);
+  border-color: var(--color-blue-500);
+  color: var(--color-blue-500);
+}
+
+.go-ext-icon-button-small {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 6px;
+}
+
+.go-ext-icon-button-small:first-child {
+  border-right: 1px solid var(--color-neutral-600);
+}
+
+.go-ext-icon-button-small:hover {
+  background: var(--color-neutral-600);
+}
+
+.go-ext-icon-button-danger:hover {
+  background: var(--color-red-500);
+  color: white;
+}
+
+/* ===== Editable Header ===== */
+.go-ext-editable-header {
+  flex: 1;
+  min-width: 0;
+}
+
+.go-ext-editable-header-display {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.go-ext-editable-header-display:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.go-ext-editable-header-input {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  background: transparent;
+  border: 2px solid var(--color-blue-500);
+  border-radius: 6px;
+  padding: 4px 8px;
+  outline: none;
+}
+
+/* ===== Privacy Link ===== */
+.go-ext-privacy-link {
+  font-size: 13px;
+  color: var(--color-neutral-500);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.go-ext-privacy-link:hover {
+  color: white;
+}
+
+/* ===== Popup Frame ===== */
+.go-ext-popup-frame {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 12px);
+  background: var(--color-neutral-900);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.2s;
+}
+
+.go-ext-popup-frame.go-ext-popup-open {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.go-ext-popup-frame.go-ext-popup-closing {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.go-ext-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--color-neutral-800);
+  gap: 12px;
+}
+
+.go-ext-popup-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.go-ext-popup-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.go-ext-popup-close:hover {
+  background: var(--color-neutral-800);
+  color: white;
+}
+
+.go-ext-popup-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* ===== Breakpoint Edit Form ===== */
+.go-ext-breakpoint-edit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.go-ext-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.go-ext-form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-neutral-400);
+}
+
+.go-ext-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--color-neutral-800);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 44px;
+  transition: all 0.2s;
+}
+
+.go-ext-input-wrapper:focus-within {
+  background: var(--color-neutral-700);
+  border-color: var(--color-blue-500);
+}
+
+.go-ext-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.go-ext-input::-webkit-outer-spin-button,
+.go-ext-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.go-ext-input-unit {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--color-neutral-500);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.go-ext-form-help {
+  font-size: 11px;
+  color: var(--color-neutral-500);
+}
+
+/* ===== Keyboard Shortcuts ===== */
+.go-ext-shortcuts-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.go-ext-shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.go-ext-shortcut-label {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
+.go-ext-shortcut-keys {
+  font-size: 12px;
+  font-family: 'Courier New', 'SF Mono', Monaco, Consolas, monospace;
+  color: var(--color-neutral-400);
+  background: var(--color-neutral-800);
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-neutral-700);
+}
+
+/* ===== Confirmation Dialog ===== */
+.go-ext-confirm-dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.go-ext-confirm-dialog {
+  background: var(--color-neutral-800);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.go-ext-confirm-dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.go-ext-confirm-dialog-message {
+  font-size: 14px;
+  color: var(--color-neutral-300);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.go-ext-confirm-dialog-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.go-ext-confirm-dialog-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.go-ext-confirm-dialog-btn-cancel {
+  background: var(--color-neutral-700);
+  color: white;
+}
+
+.go-ext-confirm-dialog-btn-cancel:hover {
+  background: var(--color-neutral-600);
+}
+
+.go-ext-confirm-dialog-btn-confirm {
+  background: var(--color-blue-500);
+  color: white;
+}
+
+.go-ext-confirm-dialog-btn-confirm:hover {
+  background: var(--color-blue-600);
+}
+
+.go-ext-confirm-dialog-btn-danger {
+  background: var(--color-red-500);
+}
+
+.go-ext-confirm-dialog-btn-danger:hover {
+  background: var(--color-red-600);
+}
+
+/* ===== Viewport Indicator ===== */
+.go-ext-viewport-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: var(--go-ext-z-index-indicator);
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.go-ext-container.go-ext-active .go-ext-viewport-indicator {
+  display: flex;
+}
+
+.go-ext-viewport-width {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+}
+
+.go-ext-indicator-separator {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+}
+
+.go-ext-indicator-breakpoint-name {
+  color: var(--color-blue-500);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.go-ext-breakpoint-range {
+  color: #888;
+  font-weight: 500;
+  font-size: 11px;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+}
+
+/* ===== Icon Styling ===== */
+.go-ext-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
