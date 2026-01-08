@@ -1,102 +1,60 @@
-/* CSS Variables for configurability */
+/**
+ * Grid Overlay Extension Styles
+ * Using unique class prefix "go-ext-" to avoid conflicts with host page
+ * No !important rules - relying on specificity instead
+ */
+
+/* CSS Variables */
 :root {
   --go-ext-z-index-container: 2147483647;
   --go-ext-z-index-indicator: 2147483646;
 }
 
-.grid-overlay-container {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  pointer-events: none !important;
-  z-index: var(--go-ext-z-index-container) !important;
-  display: none !important;
-  background: transparent !important;
+/* Main Container */
+.go-ext-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: var(--go-ext-z-index-container);
+  display: none;
 }
 
-.grid-overlay-container.active {
-  display: block !important;
+.go-ext-container.go-ext-active {
+  display: block;
 }
 
-.grid-overlay-canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
+/* Canvas */
+.go-ext-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* Parent wrapper for controls and resize handle */
-.grid-controls-wrapper {
-  --controls-width: 320px;
-  position: fixed !important;
-  top: 20px !important;
-  right: 20px !important;
-  bottom: 20px !important;
-  display: flex !important;
-  min-width: 280px !important;
-  width: var(--controls-width) !important;
-  max-width: 600px !important;
-  max-height: calc(100vh - 40px) !important;
-  pointer-events: auto !important;
-  align-items: stretch !important;
-  overflow: hidden !important;
-  z-index: var(--go-ext-z-index-container) !important;
+/* Controls Wrapper - Positioned below toggle button */
+.go-ext-controls-wrapper {
+  position: fixed;
+  top: 76px;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  min-width: 280px;
+  width: 320px;
+  max-width: 600px;
+  max-height: calc(100vh - 96px);
+  pointer-events: auto;
+  align-items: center;
+  overflow: hidden;
+  z-index: var(--go-ext-z-index-container);
 }
 
-.grid-controls-wrapper.minimized .grid-overlay-controls,
-.grid-controls-wrapper.minimized .grid-resize-handle {
-  display: none !important;
-}
-
-/* Toggle tab button */
-.grid-toggle-tab {
-  position: absolute !important;
-  top: 50% !important;
-  right: 100% !important;
-  transform: translateY(-50%) !important;
-  width: 32px !important;
-  height: 64px !important;
-  background: rgba(0, 0, 0, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-right: none !important;
-  border-radius: 8px 0 0 8px !important;
-  color: #fff !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  pointer-events: auto !important;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: all 0.2s ease !important;
-  backdrop-filter: blur(10px) !important;
-  z-index: 1 !important;
-  user-select: none !important;
-}
-
-.grid-toggle-tab .grid-icon {
-  width: 20px !important;
-  height: 20px !important;
-  color: #fff !important;
-  stroke-width: 2 !important;
-}
-
-.grid-toggle-tab:hover {
-  background: rgba(0, 0, 0, 1) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.4) !important;
-}
-
-.grid-toggle-tab:active {
-  transform: translateY(-50%) scale(0.95) !important;
-}
-
-/* Scrollable controls content */
-.grid-overlay-controls {
-  flex: 1;
+/* Scrollable Controls Content */
+.go-ext-controls {
+  flex: 1 1 auto;
   background: rgba(0, 0, 0, 0.95);
   color: #fff;
   padding: 20px;
@@ -112,37 +70,36 @@
   scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 }
 
-/* Modern scrollbar styling */
-.grid-overlay-controls::-webkit-scrollbar {
+/* Scrollbar Styling */
+.go-ext-controls::-webkit-scrollbar {
   width: 8px;
 }
 
-.grid-overlay-controls::-webkit-scrollbar-track {
+.go-ext-controls::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 0 4px 4px 0;
 }
 
-.grid-overlay-controls::-webkit-scrollbar-thumb {
+.go-ext-controls::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   transition: background-color 0.2s;
 }
 
-.grid-overlay-controls::-webkit-scrollbar-thumb:hover {
+.go-ext-controls::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.grid-overlay-controls::-webkit-scrollbar-thumb:active {
+.go-ext-controls::-webkit-scrollbar-thumb:active {
   background: rgba(255, 255, 255, 0.4);
 }
 
-/* Hide scrollbar buttons (arrows) */
-.grid-overlay-controls::-webkit-scrollbar-button {
+.go-ext-controls::-webkit-scrollbar-button {
   display: none;
 }
 
-/* Left resize handle - separate element, doesn't scroll */
-.grid-resize-handle {
+/* Resize Handle */
+.go-ext-resize-handle {
   width: 8px;
   height: 100%;
   background: rgba(0, 0, 0, 0.95);
@@ -155,15 +112,13 @@
   justify-content: center;
   flex-shrink: 0;
   position: relative;
-  pointer-events: auto;
 }
 
-.grid-resize-handle:hover {
-  background: rgba(0,0,0,0.85);
+.go-ext-resize-handle:hover {
+  background: rgba(0, 0, 0, 0.85);
 }
 
-/* Resize handle visual grip indicator */
-.resize-handle-grip {
+.go-ext-resize-handle-grip {
   width: 2px;
   height: 40px;
   background: rgba(255, 255, 255, 0.3);
@@ -171,44 +126,60 @@
   pointer-events: none;
 }
 
-/* Remove number input arrows */
-.grid-overlay-controls input[type="number"]::-webkit-outer-spin-button,
-.grid-overlay-controls input[type="number"]::-webkit-inner-spin-button {
+/* Input Fields - Remove Arrows */
+.go-ext-controls input[type="number"]::-webkit-outer-spin-button,
+.go-ext-controls input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.grid-overlay-controls input[type="number"] {
+.go-ext-controls input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.grid-overlay-controls h3 {
-  margin: 0 0 15px 0 !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-  padding-bottom: 10px !important;
-  color: #fff !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  line-height: 1.4 !important;
-  letter-spacing: normal !important;
-  text-transform: none !important;
+/* Headings */
+.go-ext-controls h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.grid-control-group {
-  margin-bottom: 16px;
+/* Autosaving Indicator */
+.go-ext-autosaving-indicator {
+  font-size: 10px;
+  font-weight: 400;
+  color: #00ff88;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
-.grid-control-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  color: #b8b8b8;
-  font-weight: 500;
+.go-ext-autosaving-indicator.go-ext-visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-/* 2-column form layout */
-.grid-control-row {
+.go-ext-autosaving-dot {
+  width: 6px;
+  height: 6px;
+  background: #00ff88;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Control Row Layout */
+.go-ext-control-row {
   display: grid;
   grid-template-columns: 110px 1fr;
   align-items: center;
@@ -216,15 +187,15 @@
   margin-bottom: 12px;
 }
 
-.grid-control-row label {
+.go-ext-control-row label {
   font-size: 12px;
   color: #b8b8b8;
   font-weight: 500;
   white-space: nowrap;
 }
 
-/* Figma-style unified input fields */
-.figma-input-wrapper {
+/* Input Wrapper */
+.go-ext-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -236,21 +207,22 @@
   overflow: hidden;
 }
 
-.figma-input-wrapper:hover {
+.go-ext-input-wrapper:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.figma-input-wrapper:focus-within {
+.go-ext-input-wrapper:focus-within {
   outline: none;
   border-color: #0066ff;
   background: rgba(255, 255, 255, 0.12);
 }
 
-.figma-input,
-.figma-input-wrapper input[type="number"],
-.figma-input-wrapper input[type="text"] {
-  flex: 1;
+/* Input Fields */
+.go-ext-input,
+.go-ext-input-wrapper input[type="number"],
+.go-ext-input-wrapper input[type="text"] {
+  flex: 1 1 auto;
   min-width: 0;
   padding: 6px 10px;
   background: transparent;
@@ -265,19 +237,12 @@
   -moz-appearance: textfield;
 }
 
-.figma-input:focus,
-.figma-input-wrapper input:focus {
+.go-ext-input:focus,
+.go-ext-input-wrapper input:focus {
   outline: none;
 }
 
-/* Remove number input spinners */
-.figma-input-wrapper input[type="number"]::-webkit-outer-spin-button,
-.figma-input-wrapper input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.input-unit {
+.go-ext-input-unit {
   padding-right: 10px;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
@@ -288,15 +253,14 @@
   flex-shrink: 0;
 }
 
-/* Color picker container */
-.color-input-container {
+/* Color Picker */
+.go-ext-color-input-container {
   position: relative;
   width: 100%;
   height: 32px;
 }
 
-/* Hidden color input positioned over swatch */
-.color-input-hidden {
+.go-ext-color-input-hidden {
   position: absolute;
   top: 0;
   left: 0;
@@ -308,8 +272,7 @@
   z-index: 2;
 }
 
-/* Color swatch visual */
-.color-swatch {
+.go-ext-color-swatch {
   position: absolute;
   top: 0;
   left: 0;
@@ -323,73 +286,24 @@
   z-index: 1;
 }
 
-.color-input-hidden:hover+.color-swatch {
+.go-ext-color-input-hidden:hover + .go-ext-color-swatch {
   border-color: rgba(255, 255, 255, 0.3);
   opacity: 0.9;
 }
 
-.color-input-hidden:active+.color-swatch {
+.go-ext-color-input-hidden:active + .go-ext-color-swatch {
   opacity: 0.8;
 }
 
-/* Legacy input styles for compatibility */
-.grid-control-group input[type="number"],
-.grid-control-group input[type="color"],
-.grid-control-group input[type="text"],
-.grid-control-group select {
-  width: 100%;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
-  transition: border-color 0.2s;
-}
-
-.grid-control-group input[type="number"]:focus,
-.grid-control-group input[type="color"]:focus,
-.grid-control-group input[type="text"]:focus,
-.grid-control-group select:focus {
-  outline: none;
-  border-color: #0066ff;
-}
-
-.grid-control-group input[type="range"] {
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  outline: none;
-}
-
-.grid-control-group input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #0066ff;
-  border-radius: 99rem;
-  cursor: pointer;
-}
-
-.grid-control-group input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: #0066ff;
-  border-radius: 99rem;
-  cursor: pointer;
-  border: none;
-}
-
-.grid-control-buttons {
+/* Buttons */
+.go-ext-control-buttons {
   display: flex;
   gap: 8px;
   margin-top: 15px;
 }
 
-.grid-btn {
-  flex: 1;
+.go-ext-btn {
+  flex: 1 1 auto;
   padding: 10px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -399,37 +313,35 @@
   font-size: 12px;
   font-weight: 500;
   transition: background-color 0.2s, opacity 0.2s;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.grid-btn:hover {
+.go-ext-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.grid-btn-primary {
+.go-ext-btn-primary {
   background: #0066ff;
   border: 1px solid #0066ff;
 }
 
-.grid-btn-primary:hover {
+.go-ext-btn-primary:hover {
   background: #0052cc;
   border: 1px solid #0052cc;
 }
 
-.grid-btn-danger {
-  background: #dc3545;
-  border: 1px solid #dc3545;
+/* Icon Styling */
+.go-ext-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
-.grid-btn-danger:hover {
-  background: #c82333;
-  border: 1px solid #c82333;
-}
-
-.grid-preset-item {
+/* Preset Items */
+.go-ext-preset-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -440,22 +352,22 @@
   transition: background 0.2s;
 }
 
-.grid-preset-item:hover {
+.go-ext-preset-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.grid-preset-item span {
-  flex: 1;
+.go-ext-preset-item span {
+  flex: 1 1 auto;
   cursor: pointer;
   font-size: 13px;
 }
 
-.grid-preset-item span:hover {
+.go-ext-preset-item span:hover {
   color: #0066ff;
 }
 
-.grid-preset-delete {
-  padding: 6px 10px !important;
+.go-ext-preset-delete {
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 4px;
@@ -463,48 +375,53 @@
   cursor: pointer;
   font-size: 11px;
   transition: background 0.2s;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 4px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.grid-preset-delete .grid-icon {
-  width: 14px !important;
-  height: 14px !important;
-}
-
-.grid-preset-delete:hover {
+.go-ext-preset-delete:hover {
   background: rgba(220, 53, 69, 0.8);
 }
 
-/* Global icon styling for inline SVG icons */
-.grid-icon {
-  width: 16px !important;
-  height: 16px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  vertical-align: middle !important;
-  flex-shrink: 0 !important;
+/* Toggle Button - Positioned above controls */
+.go-ext-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  pointer-events: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+  z-index: calc(var(--go-ext-z-index-container) + 1);
 }
 
-.grid-icon svg {
-  width: 100% !important;
-  height: 100% !important;
-  color: inherit !important;
-  stroke: currentColor !important;
+.go-ext-toggle-btn:hover {
+  background: rgba(0, 0, 0, 1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
-/* Breakpoint selector buttons */
-.breakpoint-selector {
+/* Breakpoint Selector */
+.go-ext-breakpoint-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 10px;
 }
 
-.breakpoint-chip {
+.go-ext-breakpoint-chip {
   padding: 6px 12px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -520,135 +437,117 @@
   position: relative;
 }
 
-.breakpoint-chip:hover {
+.go-ext-breakpoint-chip:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.25);
   color: #fff;
 }
 
-/* Editing state - blue highlight */
-.breakpoint-chip.editing {
+/* Active chip in viewing mode - blue */
+.go-ext-breakpoint-chip.go-ext-viewing-active {
   background: rgba(0, 102, 255, 0.2);
   border-color: rgba(0, 102, 255, 0.5);
   color: #0066ff;
 }
 
-/* Viewport match icon */
-.viewport-match-icon {
-  font-size: 8px;
-  color: #00ff88 !important;
-  line-height: 1;
-  margin-right: -2px;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+/* Active chip in editing mode - yellow/orange */
+.go-ext-breakpoint-chip.go-ext-editing-active {
+  background: rgba(255, 149, 0, 0.2);
+  border-color: rgba(255, 149, 0, 0.5);
+  color: #ff9500;
 }
 
-.viewport-match-icon .grid-icon {
-  width: 14px !important;
-  height: 14px !important;
-  color: #00ff88 !important;
+.go-ext-breakpoint-mode-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.breakpoint-chip.viewport-match .viewport-match-icon {
-  color: #00ff88 !important;
+.go-ext-breakpoint-mode-icon.go-ext-viewport-icon {
+  color: #00ff88;
 }
 
-.breakpoint-chip.viewport-match .viewport-match-icon .grid-icon {
-  color: #00ff88 !important;
-}
-
-.breakpoint-chip-name {
+.go-ext-breakpoint-chip-name {
   font-weight: 600;
 }
 
-.breakpoint-chip-width {
+.go-ext-breakpoint-chip-width {
   font-size: 11px;
   opacity: 0.7;
 }
 
-.breakpoint-chip-delete {
+.go-ext-breakpoint-chip-delete {
   width: 18px;
   height: 18px;
-  padding: 0 !important;
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 99rem;
   color: #fff;
   font-size: 12px;
   font-weight: bold;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
-.breakpoint-chip-delete .grid-icon {
-  width: 12px !important;
-  height: 12px !important;
-}
-
-.breakpoint-chip-delete:hover {
+.go-ext-breakpoint-chip-delete:hover {
   background: rgba(220, 53, 69, 0.8);
   border-color: rgba(220, 53, 69, 1);
 }
 
-.section-divider {
+/* Section Divider */
+.go-ext-section-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
   margin: 20px 0;
 }
 
-.info-text {
-  font-size: 11px;
-  color: #9a9a9a;
-  margin-top: 4px;
-  font-style: italic;
-}
-
-.grid-viewport-indicator {
-  position: fixed !important;
-  top: 20px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+/* Viewport Indicator */
+.go-ext-viewport-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.95);
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  pointer-events: none !important;
+  pointer-events: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
-  z-index: var(--go-ext-z-index-indicator) !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
+  z-index: var(--go-ext-z-index-indicator);
+  display: none;
+  flex-direction: row;
+  align-items: center;
   gap: 12px;
-  white-space: nowrap;
-  min-width: fit-content;
 }
 
-.grid-viewport-indicator.hidden {
-  display: none !important;
+.go-ext-container.go-ext-active .go-ext-viewport-indicator {
+  display: flex;
 }
 
-.viewport-width {
+.go-ext-viewport-width {
   color: #fff;
   font-weight: 600;
   font-size: 16px;
-  font-family: "SF Mono", Monaco, Consolas, monospace !important;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
   letter-spacing: -0.5px;
 }
 
-.indicator-separator {
+.go-ext-indicator-separator {
   color: rgba(255, 255, 255, 0.3);
   font-size: 12px;
   line-height: 1;
 }
 
-.breakpoint-name {
+.go-ext-breakpoint-name {
   color: #0066ff;
   font-weight: 600;
   font-size: 12px;
@@ -656,14 +555,15 @@
   letter-spacing: 0.5px;
 }
 
-.breakpoint-range {
+.go-ext-breakpoint-range {
   color: #888;
   font-weight: 500;
   font-size: 11px;
   font-family: "SF Mono", Monaco, Consolas, monospace;
+  white-space: nowrap;
 }
 
-.mode-status {
+.go-ext-mode-status {
   font-weight: 600;
   font-size: 10px;
   text-transform: uppercase;
@@ -673,23 +573,24 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.mode-status.viewing {
+.go-ext-mode-status.go-ext-viewing {
   color: #00ff88;
   background: rgba(0, 255, 136, 0.15);
 }
 
-.mode-status.editing {
+.go-ext-mode-status.go-ext-editing {
   color: #ff9500;
   background: rgba(255, 149, 0, 0.15);
 }
 
-.grid-zoom-section {
+/* Zoom Section */
+.go-ext-zoom-section {
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.zoom-section-label {
+.go-ext-zoom-section-label {
   display: block;
   font-size: 12px;
   color: #b8b8b8;
@@ -697,13 +598,13 @@
   margin-bottom: 8px;
 }
 
-.grid-zoom-controls {
+.go-ext-zoom-controls {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.grid-zoom-btn {
+.go-ext-zoom-btn {
   width: 32px;
   height: 32px;
   background: rgba(255, 255, 255, 0.1);
@@ -712,33 +613,29 @@
   color: #fff;
   cursor: pointer;
   font-size: 18px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color 0.2s;
   font-weight: bold;
-  padding: 0 !important;
+  flex-shrink: 0;
 }
 
-.grid-zoom-btn .grid-icon {
-  width: 18px !important;
-  height: 18px !important;
-}
-
-.grid-zoom-btn:hover {
+.go-ext-zoom-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.grid-zoom-label {
-  flex: 1;
+.go-ext-zoom-label {
+  flex: 1 1 auto;
   text-align: center;
   font-size: 12px;
   color: #b8b8b8;
   font-weight: 500;
 }
 
-.grid-visibility-toggle,
-.grid-mode-toggle {
+/* Visibility and Mode Toggles */
+.go-ext-visibility-toggle,
+.go-ext-mode-toggle {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -748,9 +645,9 @@
   border-radius: 8px;
 }
 
-.grid-visibility-toggle label,
-.grid-mode-toggle label {
-  flex: 1;
+.go-ext-visibility-toggle label,
+.go-ext-mode-toggle label {
+  flex: 1 1 auto;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -759,7 +656,7 @@
   gap: 8px;
 }
 
-.keyboard-hint {
+.go-ext-keyboard-hint {
   font-size: 10px;
   color: rgba(255, 255, 255, 0.5);
   font-weight: 400;
@@ -771,7 +668,8 @@
   letter-spacing: 0.5px;
 }
 
-.toggle-switch {
+/* Toggle Switch */
+.go-ext-toggle-switch {
   position: relative;
   width: 48px;
   height: 26px;
@@ -779,13 +677,14 @@
   border-radius: 13px;
   cursor: pointer;
   transition: background 0.3s;
+  flex-shrink: 0;
 }
 
-.toggle-switch.active {
+.go-ext-toggle-switch.go-ext-active {
   background: #0066ff;
 }
 
-.toggle-slider {
+.go-ext-toggle-slider {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -796,6 +695,6 @@
   transition: transform 0.3s;
 }
 
-.toggle-switch.active .toggle-slider {
+.go-ext-toggle-switch.go-ext-active .go-ext-toggle-slider {
   transform: translateX(22px);
 }
