@@ -14,9 +14,9 @@
   --color-neutral-200: #e5e5e5;
   --color-neutral-300: #d4d4d4;
 
-  /* Scaled down sizes */
+  /* Control sizes per design guide */
   --control-height: 32px;
-  --icon-button-size: 32px;
+  --icon-button-size: 28px; /* 16px icon + 6px padding * 2 */
   --color-neutral-400: #a3a3a3;
   --color-neutral-500: #737373;
   --color-neutral-600: #525252;
@@ -99,20 +99,22 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  gap: 24px;
+  gap: 16px;
 }
 
 .go-ext-screen-header {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-neutral-800);
 }
 
 .go-ext-screen-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 400;
   margin: 0;
-  color: white;
+  color: var(--color-neutral-300);
 }
 
 .go-ext-screen-footer {
@@ -126,14 +128,19 @@
 
 .go-ext-section-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
   margin: 0 0 12px 0;
 }
 
 /* ===== Presets Screen ===== */
+.go-ext-presets-screen .go-ext-screen-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+
 .go-ext-presets-section {
   flex: 1;
   display: flex;
@@ -150,7 +157,7 @@
   background: var(--color-neutral-800);
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 12px 8px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -171,7 +178,7 @@
   justify-content: center;
   flex-direction: row;
   gap: 8px;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
 }
 
 .go-ext-preset-card-new:hover {
@@ -188,20 +195,20 @@
 
 .go-ext-preset-card-name {
   font-size: 14px;
-  font-weight: 500;
-  color: white;
+  font-weight: 400;
+  color: var(--color-neutral-300);
 }
 
 .go-ext-preset-card-label {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .go-ext-preset-card-count {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.5px;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
 }
 
 /* ===== Breakpoints Screen ===== */
@@ -213,6 +220,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-neutral-800);
 }
 
 .go-ext-breakpoints-list {
@@ -228,7 +237,7 @@
   background: var(--color-neutral-800);
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 12px 10px;
   transition: all 0.2s;
 }
 
@@ -264,7 +273,7 @@
 
 .go-ext-breakpoint-name {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-neutral-300);
 }
 
@@ -274,7 +283,8 @@
 
 .go-ext-breakpoint-meta {
   font-size: 12px;
-  color: var(--color-neutral-500);
+  font-weight: 400;
+  color: var(--color-neutral-400);
 }
 
 .go-ext-breakpoint-item-right {
@@ -294,11 +304,11 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 10px;
+  padding: 12px 10px;
   background: transparent;
   border: 1px dashed var(--color-neutral-700);
   border-radius: 8px;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -313,9 +323,10 @@
 
 .go-ext-empty-state {
   text-align: center;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
   padding: 32px;
   font-size: 14px;
+  font-weight: 400;
 }
 
 /* ===== Colors Section ===== */
@@ -341,11 +352,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 10px;
   background: var(--color-neutral-800);
   border: 1px solid transparent;
   border-radius: 8px;
-  color: white;
+  color: var(--color-neutral-300);
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -442,7 +453,7 @@
 .go-ext-color-picker-opacity-label {
   font-size: 12px;
   color: var(--color-neutral-400);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .go-ext-color-picker-opacity-slider {
@@ -478,8 +489,8 @@
 
 .go-ext-color-picker-opacity-value {
   font-size: 12px;
-  color: white;
-  font-weight: 600;
+  color: var(--color-neutral-300);
+  font-weight: 400;
   min-width: 40px;
   text-align: right;
 }
@@ -494,7 +505,7 @@
 .go-ext-color-picker-hex-label {
   font-size: 12px;
   color: var(--color-neutral-400);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .go-ext-color-picker-hex-input {
@@ -502,9 +513,10 @@
   background: var(--color-neutral-900);
   border: 1px solid var(--color-neutral-700);
   border-radius: 6px;
-  color: white;
+  color: var(--color-neutral-300);
   font-size: 13px;
-  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-weight: 400;
+  font-family: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
 }
 
 .go-ext-color-picker-hex-input:focus {
@@ -517,8 +529,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
   background: var(--color-neutral-800);
   border: 1px solid transparent;
   border-radius: 6px;
@@ -530,7 +543,7 @@
 
 .go-ext-icon-button:hover {
   background: var(--color-neutral-700);
-  color: white;
+  color: var(--color-neutral-300);
 }
 
 .go-ext-icon-button-active {
@@ -550,10 +563,16 @@
 
 .go-ext-icon-button-small:first-child {
   border-right: 1px solid var(--color-neutral-600);
+  border-radius: 6px 0 0 6px;
+}
+
+.go-ext-icon-button-small:last-child {
+  border-radius: 0 6px 6px 0;
 }
 
 .go-ext-icon-button-small:hover {
   background: var(--color-neutral-600);
+  color: var(--color-neutral-300);
 }
 
 .go-ext-icon-button-danger:hover {
@@ -569,8 +588,8 @@
 
 .go-ext-editable-header-display {
   font-size: 20px;
-  font-weight: 700;
-  color: white;
+  font-weight: 400;
+  color: var(--color-neutral-300);
   cursor: pointer;
   display: block;
   padding: 4px 8px;
@@ -585,8 +604,8 @@
 .go-ext-editable-header-input {
   width: 100%;
   font-size: 20px;
-  font-weight: 700;
-  color: white;
+  font-weight: 400;
+  color: var(--color-neutral-300);
   background: transparent;
   border: 2px solid var(--color-blue-500);
   border-radius: 6px;
@@ -596,14 +615,15 @@
 
 /* ===== Privacy Link ===== */
 .go-ext-privacy-link {
-  font-size: 13px;
-  color: var(--color-neutral-500);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-neutral-400);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .go-ext-privacy-link:hover {
-  color: white;
+  color: var(--color-neutral-300);
 }
 
 /* ===== Popup Frame ===== */
@@ -611,6 +631,7 @@
   position: absolute;
   top: 0;
   right: calc(100% + 12px);
+  width: 240px;
   background: var(--color-neutral-900);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -636,15 +657,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 12px;
+  padding: 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--color-neutral-800);
   gap: 12px;
 }
 
 .go-ext-popup-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-neutral-300);
   margin: 0;
   flex: 1;
   min-width: 0;
@@ -654,8 +676,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -667,7 +690,7 @@
 
 .go-ext-popup-close:hover {
   background: var(--color-neutral-800);
-  color: white;
+  color: var(--color-neutral-300);
 }
 
 .go-ext-popup-content {
@@ -690,8 +713,8 @@
 }
 
 .go-ext-form-label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   color: var(--color-neutral-400);
 }
 
@@ -701,8 +724,8 @@
   background: var(--color-neutral-800);
   border: 2px solid transparent;
   border-radius: 8px;
-  padding: 0 12px;
-  height: 44px;
+  padding: 0 10px;
+  height: 32px;
   transition: all 0.2s;
 }
 
@@ -715,9 +738,9 @@
   flex: 1;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--color-neutral-300);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   text-align: right;
   outline: none;
   -webkit-appearance: none;
@@ -732,15 +755,16 @@
 
 .go-ext-input-unit {
   margin-left: 8px;
-  font-size: 12px;
-  color: var(--color-neutral-500);
-  font-weight: 500;
+  font-size: 11px;
+  color: var(--color-neutral-400);
+  font-weight: 400;
   flex-shrink: 0;
 }
 
 .go-ext-form-help {
   font-size: 11px;
-  color: var(--color-neutral-500);
+  font-weight: 400;
+  color: var(--color-neutral-400);
 }
 
 /* ===== Keyboard Shortcuts ===== */
@@ -759,13 +783,14 @@
 
 .go-ext-shortcut-label {
   font-size: 14px;
-  color: white;
-  font-weight: 500;
+  color: var(--color-neutral-300);
+  font-weight: 400;
 }
 
 .go-ext-shortcut-keys {
   font-size: 12px;
-  font-family: 'Courier New', 'SF Mono', Monaco, Consolas, monospace;
+  font-family: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
+  font-weight: 400;
   color: var(--color-neutral-400);
   background: var(--color-neutral-800);
   padding: 6px 12px;
@@ -801,13 +826,14 @@
 
 .go-ext-confirm-dialog-title {
   font-size: 18px;
-  font-weight: 600;
-  color: white;
+  font-weight: 400;
+  color: var(--color-neutral-300);
   margin: 0;
 }
 
 .go-ext-confirm-dialog-message {
   font-size: 14px;
+  font-weight: 400;
   color: var(--color-neutral-300);
   line-height: 1.5;
   margin: 0;
@@ -823,7 +849,7 @@
   padding: 10px 16px;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s;
   border: none;

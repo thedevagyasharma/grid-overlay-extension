@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Overlay Extension - Full Test Environment</title>
+
+  <!-- Load fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <!-- Load extension styles -->
+  <link rel="stylesheet" href="styles/main.css">
+
+  <style>
+    /* Test environment specific styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Test page content */
+    .test-page-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .test-hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 40px;
+    }
+
+    .test-hero h1 {
+      font-size: 48px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .test-hero p {
+      font-size: 18px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+
+    .test-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .test-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .test-feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .test-feature-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .test-feature-card h3 {
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    .test-feature-card p {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    .test-info-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 300px;
+      backdrop-filter: blur(10px);
+      z-index: 2147483645;
+    }
+
+    .test-info-panel h3 {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      color: #3b82f6;
+    }
+
+    .test-info-panel ul {
+      list-style: none;
+      font-size: 12px;
+      color: var(--color-neutral-300);
+      line-height: 1.8;
+    }
+
+    .test-info-panel li::before {
+      content: "✓ ";
+      color: #3b82f6;
+      margin-right: 6px;
+    }
+
+    .test-info-toggle {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: white;
+      cursor: pointer;
+      z-index: 2147483645;
+      transition: all 0.2s;
+    }
+
+    .test-info-toggle:hover {
+      background: rgba(0, 0, 0, 1);
+      border-color: #3b82f6;
+    }
+
+    .test-info-panel.hidden {
+      display: none;
+    }
+
+    /* Extension container override for test environment */
+    .go-ext-container {
+      display: block !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Test page content -->
+  <div class="test-page-content">
+    <div class="test-hero">
+      <h1>Grid Overlay Extension Test</h1>
+      <p>Full test environment with working grid overlay, viewport indicator, and interactive UI controls</p>
+      <div class="test-badge">🎨 Design Guide Implemented</div>
+    </div>
+
+    <div class="test-features">
+      <div class="test-feature-card">
+        <h3>Interactive Grid</h3>
+        <p>Toggle the grid overlay to see responsive breakpoints in action. Resize your browser to see different breakpoint configurations.</p>
+      </div>
+
+      <div class="test-feature-card">
+        <h3>Viewport Indicator</h3>
+        <p>Watch the viewport indicator at the top of the page show current width and active breakpoint as you resize.</p>
+      </div>
+
+      <div class="test-feature-card">
+        <h3>Full UI Controls</h3>
+        <p>Use the control panel on the right to manage presets, edit breakpoints, and customize colors. All features are fully functional.</p>
+      </div>
+
+      <div class="test-feature-card">
+        <h3>Design System</h3>
+        <p>Inter 400 for UI elements, Geist Mono for shortcuts. Perfect spacing, colors, and typography per the design guide.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Toggle Button -->
+  <button class="test-info-toggle" onclick="toggleInfo()">ℹ️ Design Info</button>
+
+  <!-- Info Panel -->
+  <div class="test-info-panel hidden" id="infoPanel">
+    <h3>Design Guide Status</h3>
+    <ul>
+      <li>Inter 400 & Geist Mono fonts</li>
+      <li>H1(24px) H2(20px) H3(18px)</li>
+      <li>Icon buttons: 28px (16+12px)</li>
+      <li>Input fields: 32px height</li>
+      <li>Cards: 12px×10px padding</li>
+      <li>Panel: 360px width</li>
+      <li>Popups: 240px width</li>
+      <li>Proper dividers & colors</li>
+    </ul>
+  </div>
+
+  <script>
+    function toggleInfo() {
+      const panel = document.getElementById('infoPanel');
+      panel.classList.toggle('hidden');
+    }
+  </script>
+
+  <!-- Mock Chrome Extension API for test environment -->
+  <script>
+    // Mock Chrome API for standalone testing
+    window.chrome = {
+      runtime: {
+        id: 'test-environment',
+        getURL: function(path) {
+          return path;
+        },
+        onMessage: {
+          addListener: function(callback) {
+            console.log('Chrome message listener registered (mock)');
+          }
+        }
+      },
+      storage: {
+        local: {
+          get: function(keys, callback) {
+            const data = {};
+
+            // Handle different input formats
+            if (Array.isArray(keys)) {
+              keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                  try {
+                    data[key] = JSON.parse(value);
+                  } catch (e) {
+                    data[key] = value;
+                  }
+                }
+              });
+            } else if (typeof keys === 'object') {
+              Object.keys(keys).forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                  try {
+                    data[key] = JSON.parse(value);
+                  } catch (e) {
+                    data[key] = value;
+                  }
+                } else {
+                  data[key] = keys[key];
+                }
+              });
+            } else if (typeof keys === 'string') {
+              const value = localStorage.getItem(keys);
+              if (value) {
+                try {
+                  data[keys] = JSON.parse(value);
+                } catch (e) {
+                  data[keys] = value;
+                }
+              }
+            }
+
+            if (callback) {
+              // Call asynchronously to mimic chrome.storage behavior
+              setTimeout(() => callback(data), 0);
+            }
+          },
+          set: function(data, callback) {
+            Object.keys(data).forEach(key => {
+              try {
+                localStorage.setItem(key, JSON.stringify(data[key]));
+              } catch (e) {
+                console.error('Error saving to localStorage:', e);
+              }
+            });
+            if (callback) {
+              setTimeout(callback, 0);
+            }
+          }
+        }
+      }
+    };
+
+    console.log('🧪 Test Environment - Chrome API mocked');
+  </script>
+
+  <!-- Load the actual content.js - exact same as the real extension -->
+  <script src="content.js"></script>
+
+  <!-- Auto-enable grid after initialization for test environment -->
+  <script>
+    // Wait for the extension to initialize, then enable it
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    const tryEnable = setInterval(() => {
+      attempts++;
+
+      if (window.gridOverlayApp && typeof appState !== 'undefined') {
+        clearInterval(tryEnable);
+        console.log('🎨 Auto-enabling grid for test environment...');
+
+        // Give it a moment for everything to be fully initialized
+        setTimeout(() => {
+          window.gridOverlayApp.enable();
+          console.log('✅ Grid enabled! Extension is ready.');
+          console.log('📊 State:', {
+            presets: appState.presets?.length || 0,
+            currentScreen: appState.currentScreen,
+            gridEnabled: appState.gridEnabled,
+            gridVisible: appState.gridVisible
+          });
+        }, 100);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(tryEnable);
+        console.error('❌ Failed to initialize extension. Check console for errors.');
+      }
+    }, 100);
+  </script>
+</body>
+</html>
