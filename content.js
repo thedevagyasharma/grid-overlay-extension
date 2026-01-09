@@ -47,62 +47,23 @@
       this.controls = null;
       this.viewportIndicator = null;
       this.gridRenderer = null;
+      this.initialized = false;
     }
 
     init() {
-      // Load all scripts dynamically
-      this.loadScripts().then(() => {
-        this.createElements();
-        this.loadSettings();
-        this.setupEventListeners();
+      // All scripts are now loaded via manifest, so we can initialize directly
+      this.createElements();
+      this.loadSettings();
+      this.setupEventListeners();
 
-        // Auto-enable if was previously enabled
-        StorageManager.loadGridEnabled(() => {
-          if (appState.gridEnabled) {
-            this.enable();
-          }
-        });
-      });
-    }
+      // Mark as initialized
+      this.initialized = true;
 
-    async loadScripts() {
-      // Get the extension URL base
-      const getURL = chrome.runtime?.getURL || ((path) => path);
-
-      const scripts = [
-        'js/utils/helpers.js',
-        'js/utils/icons.js',
-        'js/state.js',
-        'js/storage.js',
-        'js/GridRenderer.js',
-        'js/components/ColorPicker.js',
-        'js/components/ConfirmDialog.js',
-        'js/components/EditableHeader.js',
-        'js/components/PopupFrame.js',
-        'js/screens/PresetsScreen.js',
-        'js/screens/BreakpointsScreen.js',
-        'js/screens/BreakpointEditPopup.js',
-        'js/screens/KeyboardShortcutsPopup.js',
-        'js/ViewRouter.js'
-      ];
-
-      for (const script of scripts) {
-        await this.loadScript(getURL(script));
-      }
-    }
-
-    loadScript(src) {
-      return new Promise((resolve, reject) => {
-        // For test environment, use relative paths
-        if (!chrome.runtime?.getURL) {
-          src = '../' + src;
+      // Auto-enable if was previously enabled
+      StorageManager.loadGridEnabled(() => {
+        if (appState.gridEnabled) {
+          this.enable();
         }
-
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
       });
     }
 
@@ -212,6 +173,7 @@
           appState.indicatorVisible = !appState.indicatorVisible;
           StorageManager.saveIndicatorVisibility();
           this.updateIndicatorVisibility();
+          ViewRouter.updateCurrentScreen();
         }
       });
 
@@ -293,6 +255,10 @@
     }
 
     toggle() {
+      if (!this.initialized || typeof appState === 'undefined') {
+        console.warn('Grid Overlay: Cannot toggle - not yet initialized');
+        return false;
+      }
       if (appState.gridEnabled) {
         this.disable();
       } else {

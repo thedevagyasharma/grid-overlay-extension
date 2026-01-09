@@ -10,6 +10,7 @@ landing-page/
 
 # Development files
 .claude/
+asset-generator/
 
 # OS files
 .DS_Store

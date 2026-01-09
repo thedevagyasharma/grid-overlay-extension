@@ -267,18 +267,10 @@ class BreakpointsScreen {
       'data-breakpoint-id': breakpoint.id
     });
 
-    // Left section with icon and info
+    // Left section with info
     const leftSection = createElement('div', {
       className: 'go-ext-breakpoint-item-left'
     });
-
-    if (isActive) {
-      const icon = createElement('span', {
-        className: 'go-ext-breakpoint-icon'
-      });
-      icon.appendChild(Icons.eye());
-      leftSection.appendChild(icon);
-    }
 
     const info = createElement('div', {
       className: 'go-ext-breakpoint-info'
