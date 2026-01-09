@@ -24,8 +24,10 @@
   --color-neutral-800: #262626;
   --color-neutral-900: #171717;
 
+  --color-slate-800: #1e293b;
   --color-slate-900: #0f172a;
 
+  --color-blue-400: #60a5fa;
   --color-blue-500: #3b82f6;
   --color-blue-600: #2563eb;
   --color-blue-700: #1d4ed8;
@@ -550,6 +552,14 @@
   background: var(--color-slate-900);
   border-color: var(--color-blue-500);
   color: var(--color-blue-500);
+}
+
+/* Toggle buttons specific hover state */
+#go-ext-toggle-grid-btn:hover,
+#go-ext-toggle-indicator-btn:hover {
+  background: var(--color-slate-800);
+  border-color: var(--color-blue-500);
+  color: var(--color-blue-400);
 }
 
 .go-ext-icon-button-small {
