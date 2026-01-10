@@ -1,14 +1,14 @@
-# Privacy Policy for Grid Overlay Chrome Extension
+# Privacy Policy for Grid Overlay Pro Chrome Extension
 
 **Last Updated:** January 7, 2026
 
 ## Introduction
 
-Grid Overlay ("the Extension") is a browser extension that provides a professional grid overlay tool with responsive breakpoints for web design and development. This privacy policy explains how the Extension handles user data.
+Grid Overlay Pro ("the Extension") is a browser extension that provides a professional grid overlay tool with responsive breakpoints for web design and development. This privacy policy explains how the Extension handles user data.
 
 ## Summary
 
-**Grid Overlay does not collect, transmit, or share any personal or sensitive user data.** All settings and preferences are stored locally on your device and never leave your browser.
+**Grid Overlay Pro does not collect, transmit, or share any personal or sensitive user data.** All settings and preferences are stored locally on your device and never leave your browser.
 
 ## Data Collection and Storage
 
@@ -40,7 +40,7 @@ Your settings persist locally until you:
 
 ## Data We Do NOT Collect
 
-Grid Overlay does **not** collect:
+Grid Overlay Pro does **not** collect:
 
 - Personal information (name, email, address, phone number)
 - Authentication credentials or login information
@@ -80,7 +80,7 @@ The Extension includes export and import functionality for your grid settings:
 
 ## Third-Party Services
 
-Grid Overlay does **not** use any third-party services, analytics, or tracking tools. The Extension operates entirely offline and locally on your device.
+Grid Overlay Pro does **not** use any third-party services, analytics, or tracking tools. The Extension operates entirely offline and locally on your device.
 
 ## Data Security
 
@@ -88,7 +88,7 @@ Since all data is stored locally on your device and never transmitted externally
 
 ## Children's Privacy
 
-Grid Overlay does not collect any personal information from anyone, including children under 13 years of age.
+Grid Overlay Pro does not collect any personal information from anyone, including children under 13 years of age.
 
 ## Changes to This Privacy Policy
 
@@ -100,7 +100,7 @@ Since we do not collect any personal data, there is no personal data to access, 
 
 ## Open Source
 
-Grid Overlay is developed as an open-source project. You can review the source code to verify our privacy practices.
+Grid Overlay Pro is developed as an open-source project. You can review the source code to verify our privacy practices.
 
 ## Contact
 
@@ -116,4 +116,4 @@ This Extension complies with:
 
 ---
 
-**In Plain Terms:** Grid Overlay is a simple tool that helps you overlay a design grid on web pages. Everything you configure stays on your computer. We do not see, collect, or have access to any of your data.
+**In Plain Terms:** Grid Overlay Pro is a simple tool that helps you overlay a design grid on web pages. Everything you configure stays on your computer. We do not see, collect, or have access to any of your data.

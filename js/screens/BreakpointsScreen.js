@@ -110,7 +110,8 @@ class BreakpointsScreen {
     });
 
     const privacyLink = createElement('a', {
-      href: '#',
+      href: 'https://gop.devagyasharma.com',
+      target: '_blank',
       className: 'go-ext-privacy-link',
       textContent: 'Privacy Policy'
     });
@@ -213,11 +214,7 @@ class BreakpointsScreen {
       }
     });
 
-    // Privacy link
-    this.privacyLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Privacy Policy - Placeholder');
-    });
+    // Privacy link opens in new tab (handled by target="_blank" attribute)
   }
 
   updateToggleButton() {
