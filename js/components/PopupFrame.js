@@ -8,7 +8,7 @@ class PopupFrameComponent {
     this.title = config.title || '';
     this.content = config.content || '';
     this.onClose = config.onClose || (() => {});
-    this.width = config.width || '320px';
+    this.width = config.width || '260px';
 
     this.element = this.render();
     this.attachEvents();

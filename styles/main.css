@@ -526,6 +526,89 @@
   border-color: var(--color-blue-500);
 }
 
+/* ===== Color Picker Popup Component ===== */
+.go-ext-color-picker-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.go-ext-color-picker-popup__gradient {
+  width: 228px;
+  height: 160px;
+  border-radius: 8px;
+  cursor: crosshair;
+  display: block;
+}
+
+.go-ext-color-picker-popup__hue-slider {
+  width: 100%;
+  height: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right,
+    hsl(0, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.go-ext-color-picker-popup__hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-popup__hue-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.go-ext-color-picker-popup__inputs-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.go-ext-color-picker-popup__input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.go-ext-color-picker-popup__input-group .go-ext-input {
+  font-family: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 13px;
+}
+
+.go-ext-input-wrapper.invalid {
+  border-color: var(--color-red-500);
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
 /* ===== Icon Button ===== */
 .go-ext-icon-button {
   display: flex;
@@ -641,7 +724,7 @@
   position: absolute;
   top: 0;
   right: calc(100% + 12px);
-  width: 240px;
+  width: 260px;
   background: var(--color-neutral-900);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);

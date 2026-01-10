@@ -52,7 +52,6 @@ class BreakpointEditPopup {
     this.popup = new PopupFrameComponent({
       title: '', // We'll replace this with editable header
       content: content,
-      width: '340px',
       onClose: () => {
         appState.closePopup();
       }
