@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Grid Overlay",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Professional grid overlay tool with responsive breakpoints - like Figma grids for the web",
   "permissions": [
     "activeTab",
@@ -29,10 +29,11 @@
         "js/state.js",
         "js/storage.js",
         "js/GridRenderer.js",
+        "js/components/PopupFrame.js",
+        "js/components/ColorPickerPopup.js",
         "js/components/ColorPicker.js",
         "js/components/ConfirmDialog.js",
         "js/components/EditableHeader.js",
-        "js/components/PopupFrame.js",
         "js/screens/PresetsScreen.js",
         "js/screens/BreakpointsScreen.js",
         "js/screens/BreakpointEditPopup.js",

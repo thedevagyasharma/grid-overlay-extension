@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Grid Overlay Chrome Extension</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 2rem 0;
+        }
+
+        .last-updated {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .plain-terms {
+            background: #e8f4f8;
+            padding: 1.5rem;
+            border-left: 4px solid #3498db;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privacy Policy for Grid Overlay Chrome Extension</h1>
+        <p class="last-updated"><strong>Last Updated:</strong> January 7, 2026</p>
+
+        <h2>Introduction</h2>
+        <p>Grid Overlay ("the Extension") is a browser extension that provides a professional grid overlay tool with responsive breakpoints for web design and development. This privacy policy explains how the Extension handles user data.</p>
+
+        <h2>Summary</h2>
+        <p><strong>Grid Overlay does not collect, transmit, or share any personal or sensitive user data.</strong> All settings and preferences are stored locally on your device and never leave your browser.</p>
+
+        <h2>Data Collection and Storage</h2>
+
+        <h3>What Data is Stored</h3>
+        <p>The Extension stores the following configuration data locally on your device using Chrome's storage API (<code>chrome.storage.local</code>):</p>
+        <ul>
+            <li><strong>Grid Configuration Settings:</strong> Column count, gutter width, margin size, row gap, grid color, padding color, and opacity settings</li>
+            <li><strong>Breakpoint Settings:</strong> Custom breakpoint configurations including name, minimum width, and associated grid settings</li>
+            <li><strong>UI Preferences:</strong> UI zoom level, controls visibility state, grid visibility state, indicator visibility state, and editing mode state</li>
+            <li><strong>Saved Presets:</strong> User-created preset configurations for quick access</li>
+        </ul>
+
+        <h3>How Data is Stored</h3>
+        <p>All data is stored locally on your device using Chrome's built-in storage API. This data:</p>
+        <ul>
+            <li><strong>Never leaves your device</strong></li>
+            <li><strong>Is not transmitted to any external servers</strong></li>
+            <li><strong>Is not shared with any third parties</strong></li>
+            <li><strong>Is not accessible to the Extension developer</strong></li>
+        </ul>
+
+        <h3>Data Retention</h3>
+        <p>Your settings persist locally until you:</p>
+        <ul>
+            <li>Uninstall the Extension</li>
+            <li>Clear your browser's extension data</li>
+            <li>Manually reset the Extension settings</li>
+        </ul>
+
+        <h2>Data We Do NOT Collect</h2>
+        <p>Grid Overlay does <strong>not</strong> collect:</p>
+        <ul>
+            <li>Personal information (name, email, address, phone number)</li>
+            <li>Authentication credentials or login information</li>
+            <li>Financial or payment information</li>
+            <li>Health information</li>
+            <li>Web browsing history or activity</li>
+            <li>Website content you visit</li>
+            <li>Cookies or tracking data</li>
+            <li>Location data</li>
+            <li>Device identifiers</li>
+            <li>Any form of analytics or usage statistics</li>
+        </ul>
+
+        <h2>Permissions Explained</h2>
+        <p>The Extension requests the following permissions:</p>
+
+        <h3><code>activeTab</code></h3>
+        <p>This permission allows the Extension to inject the grid overlay on the currently active tab when you activate the Extension. It does not grant access to your browsing history or other tabs.</p>
+
+        <h3><code>storage</code></h3>
+        <p>This permission allows the Extension to save your grid configuration settings locally on your device. No data is transmitted externally.</p>
+
+        <h3>Content Script Access</h3>
+        <p>The Extension injects a content script to render the grid overlay on web pages. This script:</p>
+        <ul>
+            <li>Only draws a visual grid overlay on the page</li>
+            <li>Does not read, collect, or transmit any page content</li>
+            <li>Does not interact with or modify website data</li>
+            <li>Does not track which websites you visit</li>
+        </ul>
+
+        <h2>Export and Import Features</h2>
+        <p>The Extension includes export and import functionality for your grid settings:</p>
+        <ul>
+            <li><strong>Export:</strong> Creates a JSON file containing your grid configuration that downloads to your device. This file is generated locally and is not transmitted anywhere.</li>
+            <li><strong>Import:</strong> Reads a JSON configuration file from your device to restore settings. The file is processed locally and its contents are not transmitted anywhere.</li>
+        </ul>
+
+        <h2>Third-Party Services</h2>
+        <p>Grid Overlay does <strong>not</strong> use any third-party services, analytics, or tracking tools. The Extension operates entirely offline and locally on your device.</p>
+
+        <h2>Data Security</h2>
+        <p>Since all data is stored locally on your device and never transmitted externally, your data is protected by your device's security measures and Chrome's built-in extension security model.</p>
+
+        <h2>Children's Privacy</h2>
+        <p>Grid Overlay does not collect any personal information from anyone, including children under 13 years of age.</p>
+
+        <h2>Changes to This Privacy Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Any changes will be reflected in the "Last Updated" date at the top of this policy. Continued use of the Extension after any changes constitutes acceptance of the updated policy.</p>
+
+        <h2>Your Rights</h2>
+        <p>Since we do not collect any personal data, there is no personal data to access, modify, or delete. Your local settings can be cleared by uninstalling the Extension or clearing your browser's extension data.</p>
+
+        <h2>Open Source</h2>
+        <p>Grid Overlay is developed as an open-source project. You can review the source code to verify our privacy practices.</p>
+
+        <h2>Contact</h2>
+        <p>If you have any questions about this Privacy Policy or the Extension's data practices, please contact us through the Chrome Web Store developer contact information or by opening an issue in our project repository.</p>
+
+        <h2>Compliance</h2>
+        <p>This Extension complies with:</p>
+        <ul>
+            <li>Chrome Web Store Developer Program Policies</li>
+            <li>Chrome Web Store User Data Policy</li>
+            <li>Limited Use Requirements for Chrome Extensions</li>
+        </ul>
+
+        <hr>
+
+        <div class="plain-terms">
+            <p><strong>In Plain Terms:</strong> Grid Overlay is a simple tool that helps you overlay a design grid on web pages. Everything you configure stays on your computer. We do not see, collect, or have access to any of your data.</p>
+        </div>
+    </div>
+</body>
+</html>

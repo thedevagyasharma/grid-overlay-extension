@@ -383,6 +383,7 @@ class BreakpointsScreen {
     // Grid color picker
     this.gridColorPicker = new ColorPickerComponent({
       label: 'Grid',
+      title: 'Grid Color',
       color: preset.colors.grid,
       opacity: preset.colors.gridOpacity,
       onChange: ({ color, opacity }) => {
@@ -400,6 +401,7 @@ class BreakpointsScreen {
     // Padding color picker
     this.paddingColorPicker = new ColorPickerComponent({
       label: 'Padding',
+      title: 'Padding Color',
       color: preset.colors.padding,
       opacity: preset.colors.paddingOpacity,
       onChange: ({ color, opacity }) => {
