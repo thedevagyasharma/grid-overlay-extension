@@ -64,9 +64,12 @@ jobs:
             }
           }
 
-          # Copy modules directory if it exists
-          if (Test-Path "modules") {
-            Copy-Item "modules" -Destination $tempDir -Recurse
+          # Copy required directories
+          $dirsToInclude = @("js", "styles", "modules")
+          foreach ($dir in $dirsToInclude) {
+            if (Test-Path $dir) {
+              Copy-Item $dir -Destination $tempDir -Recurse
+            }
           }
 
           # Create ZIP file
