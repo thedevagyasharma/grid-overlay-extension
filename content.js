@@ -85,6 +85,14 @@
       this.controls = document.createElement('div');
       this.controls.className = 'go-ext-controls-wrapper';
 
+      // Minimize button
+      this.minimizeBtn = document.createElement('button');
+      this.minimizeBtn.className = 'go-ext-minimize-btn';
+      this.minimizeBtn.type = 'button';
+      this.minimizeBtn.title = 'Minimize Controls';
+      this.minimizeBtn.appendChild(Icons.minimize());
+      this.controls.appendChild(this.minimizeBtn);
+
       const controlsContent = document.createElement('div');
       controlsContent.className = 'go-ext-controls';
       this.controls.appendChild(controlsContent);
@@ -100,6 +108,22 @@
       // Initialize view router
       ViewRouter.init(controlsContent);
       ViewRouter.render();
+
+      // Setup minimize button
+      this.setupMinimizeButton();
+    }
+
+    setupMinimizeButton() {
+      this.minimizeBtn.addEventListener('click', () => {
+        this.toggleMinimize();
+      });
+    }
+
+    toggleMinimize() {
+      const isMinimized = this.controls.classList.toggle('go-ext-controls-minimized');
+      this.minimizeBtn.innerHTML = '';
+      this.minimizeBtn.appendChild(isMinimized ? Icons.maximize() : Icons.minimize());
+      this.minimizeBtn.title = isMinimized ? 'Expand Controls' : 'Minimize Controls';
     }
 
     createViewportIndicator() {
