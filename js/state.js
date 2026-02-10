@@ -95,9 +95,15 @@ class AppState {
   }
 
   /**
-   * Delete preset
+   * Delete preset (with validation)
    */
   deletePreset(id) {
+    // Prevent deleting last preset
+    if (this.presets.length <= 1) {
+      console.warn('Cannot delete last preset');
+      return false;
+    }
+
     const index = this.presets.findIndex(p => p.id === id);
     if (index > -1) {
       this.presets.splice(index, 1);
@@ -106,7 +112,9 @@ class AppState {
       if (this.currentPresetId === id) {
         this.currentPresetId = this.presets.length > 0 ? this.presets[0].id : null;
       }
+      return true;
     }
+    return false;
   }
 
   /**
@@ -217,6 +225,7 @@ class AppState {
       message: config.message || 'Are you sure?',
       confirmText: config.confirmText || 'Confirm',
       cancelText: config.cancelText || 'Cancel',
+      isDangerous: config.isDangerous || false,
       onConfirm: config.onConfirm || (() => {}),
       onCancel: config.onCancel || (() => {})
     };
