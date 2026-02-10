@@ -66,6 +66,16 @@ class ViewRouter {
     const indicator = document.querySelector('.go-ext-viewport-indicator');
     if (canvas && appState.gridVisible) canvas.style.display = 'block';
     if (indicator && appState.indicatorVisible) indicator.style.display = 'flex';
+
+    // Redraw grid with current preset settings
+    if (window.gridRenderer) {
+      window.gridRenderer.draw();
+    }
+
+    // Update viewport indicator with current preset's breakpoint
+    if (window.gridOverlayApp) {
+      window.gridOverlayApp.updateViewportIndicator();
+    }
   }
 
   /**
