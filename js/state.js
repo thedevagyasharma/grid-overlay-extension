@@ -101,11 +101,6 @@ class AppState {
     const index = this.presets.findIndex(p => p.id === id);
     if (index > -1) {
       this.presets.splice(index, 1);
-
-      // If deleted preset was active, switch to first preset
-      if (this.currentPresetId === id) {
-        this.currentPresetId = this.presets.length > 0 ? this.presets[0].id : null;
-      }
     }
   }
 
@@ -217,6 +212,7 @@ class AppState {
       message: config.message || 'Are you sure?',
       confirmText: config.confirmText || 'Confirm',
       cancelText: config.cancelText || 'Cancel',
+      isDangerous: config.isDangerous || false,
       onConfirm: config.onConfirm || (() => {}),
       onCancel: config.onCancel || (() => {})
     };

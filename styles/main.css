@@ -189,6 +189,7 @@
 }
 
 .go-ext-preset-card {
+  position: relative;
   background: var(--color-neutral-800);
   border: 1px solid transparent;
   border-radius: 8px;
@@ -244,6 +245,55 @@
   font-weight: 400;
   letter-spacing: 0.5px;
   color: var(--color-neutral-400);
+}
+
+/* Delete button - hidden by default, revealed on hover */
+.go-ext-preset-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: 6px;
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+/* Show delete button on card hover */
+.go-ext-preset-card:hover .go-ext-preset-card-delete {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Delete button hover state - match breakpoint delete button */
+.go-ext-preset-card-delete:hover {
+  background: var(--color-red-500);
+  border-color: var(--color-red-500);
+  color: white;
+}
+
+/* Delete button focus state for keyboard accessibility */
+.go-ext-preset-card-delete:focus {
+  opacity: 1;
+  pointer-events: auto;
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+/* Delete button icon sizing */
+.go-ext-preset-card-delete .go-ext-icon {
+  width: 16px;
+  height: 16px;
 }
 
 /* ===== Breakpoints Screen ===== */

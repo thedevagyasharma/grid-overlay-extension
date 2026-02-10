@@ -152,6 +152,25 @@ class PresetsScreen {
     card.appendChild(name);
     card.appendChild(breakpointCount);
 
+    // Only add delete button if more than 1 preset exists
+    if (appState.presets.length > 1) {
+      const deleteBtn = createElement('button', {
+        className: 'go-ext-preset-card-delete',
+        type: 'button',
+        title: `Delete ${preset.name}`,
+        'aria-label': `Delete ${preset.name}`
+      });
+      deleteBtn.appendChild(Icons.trash());
+
+      // Stop propagation to prevent card click
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleDeletePreset(preset);
+      });
+
+      card.appendChild(deleteBtn);
+    }
+
     card.addEventListener('click', () => {
       appState.currentPresetId = preset.id;
       appState.navigateTo('breakpoints');
@@ -163,5 +182,24 @@ class PresetsScreen {
 
   update() {
     this.renderPresets();
+  }
+
+  handleDeletePreset(preset) {
+    appState.showConfirmDialog({
+      title: 'Delete Preset?',
+      message: `Delete "${preset.name}"? This will remove all ${preset.breakpoints.length} breakpoint${preset.breakpoints.length !== 1 ? 's' : ''}.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      isDangerous: true,
+      onConfirm: () => {
+        appState.deletePreset(preset.id);
+        StorageManager.savePresets();
+        this.renderPresets();
+      }
+    });
+
+    // Render the confirmation dialog
+    const dialog = new ConfirmDialogComponent(appState.confirmDialog);
+    dialog.show(this.element);
   }
 }

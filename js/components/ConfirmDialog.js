@@ -46,7 +46,7 @@ class ConfirmDialogComponent {
     });
 
     const confirmBtn = createElement('button', {
-      className: `go-ext-confirm-dialog-btn go-ext-confirm-dialog-btn-confirm ${this.isDangerous ? 'go-ext-confirm-dialog-btn-danger' : ''}`,
+      className: `go-ext-confirm-dialog-btn ${this.isDangerous ? 'go-ext-confirm-dialog-btn-danger' : 'go-ext-confirm-dialog-btn-confirm'}`,
       textContent: this.confirmText
     });
 
