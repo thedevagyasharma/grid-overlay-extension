@@ -95,26 +95,13 @@ class AppState {
   }
 
   /**
-   * Delete preset (with validation)
+   * Delete preset
    */
   deletePreset(id) {
-    // Prevent deleting last preset
-    if (this.presets.length <= 1) {
-      console.warn('Cannot delete last preset');
-      return false;
-    }
-
     const index = this.presets.findIndex(p => p.id === id);
     if (index > -1) {
       this.presets.splice(index, 1);
-
-      // If deleted preset was active, switch to first preset
-      if (this.currentPresetId === id) {
-        this.currentPresetId = this.presets.length > 0 ? this.presets[0].id : null;
-      }
-      return true;
     }
-    return false;
   }
 
   /**
