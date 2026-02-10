@@ -349,6 +349,10 @@ class ColorPickerPopupComponent {
     });
   }
 
+  render() {
+    return this.element;
+  }
+
   show(parent) {
     this.popup.show(parent);
   }

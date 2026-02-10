@@ -202,16 +202,8 @@ class BreakpointsScreen {
 
     // Keyboard shortcuts - toggle
     this.keyboardBtn.addEventListener('click', () => {
-      if (appState.activePopup === 'shortcuts') {
-        ViewRouter.closePopup();
-      } else {
-        // Close any other popup first
-        if (appState.activePopup) {
-          ViewRouter.closePopup();
-        }
-        appState.openPopup('shortcuts');
-        ViewRouter.renderPopup();
-      }
+      const shouldOpen = appState.openPopup('shortcuts');
+      ViewRouter.renderPopup();
     });
 
     // Privacy link opens in new tab (handled by target="_blank" attribute)
@@ -319,7 +311,7 @@ class BreakpointsScreen {
 
     // Event listeners
     editBtn.addEventListener('click', () => {
-      appState.openPopup('breakpoint-edit', { breakpointId: breakpoint.id });
+      const shouldOpen = appState.openPopup('breakpoint-edit', { breakpointId: breakpoint.id });
       ViewRouter.renderPopup();
     });
 
@@ -381,6 +373,7 @@ class BreakpointsScreen {
     this.gridColorPicker = new ColorPickerComponent({
       label: 'Grid',
       title: 'Grid Color',
+      type: 'grid',
       color: preset.colors.grid,
       opacity: preset.colors.gridOpacity,
       onChange: ({ color, opacity }) => {
@@ -399,6 +392,7 @@ class BreakpointsScreen {
     this.paddingColorPicker = new ColorPickerComponent({
       label: 'Padding',
       title: 'Padding Color',
+      type: 'padding',
       color: preset.colors.padding,
       opacity: preset.colors.paddingOpacity,
       onChange: ({ color, opacity }) => {

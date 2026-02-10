@@ -6,8 +6,9 @@ class AppState {
   constructor() {
     // View state
     this.currentView = 'presets'; // presets, breakpoints
-    this.activePopup = null; // breakpoint-edit, shortcuts
+    this.activePopup = null; // breakpoint-edit, shortcuts, color-picker
     this.editingBreakpointId = null;
+    this.colorPickerType = null; // 'grid' or 'padding'
 
     // Presets
     this.presets = [];
@@ -186,13 +187,45 @@ class AppState {
   }
 
   /**
-   * Open popup
+   * Open popup with toggle logic
+   * - If same popup is already open, close it (toggle off)
+   * - If different popup is open, close it and open new one (replace)
+   * - If no popup is open, open the new one
    */
   openPopup(popup, data = {}) {
+    // Check if we're trying to open the same popup
+    const isSamePopup = this.activePopup === popup && this._isSamePopupData(popup, data);
+
+    if (isSamePopup) {
+      // Toggle off - close the current popup
+      this.closePopup();
+      return false; // Indicate popup was closed
+    }
+
+    // Different popup or no popup - set new popup
     this.activePopup = popup;
+
     if (popup === 'breakpoint-edit') {
       this.editingBreakpointId = data.breakpointId || null;
+    } else if (popup === 'color-picker') {
+      this.colorPickerType = data.type || null; // 'grid' or 'padding'
     }
+
+    return true; // Indicate popup was opened
+  }
+
+  /**
+   * Check if popup data represents the same popup instance
+   */
+  _isSamePopupData(popup, data) {
+    if (popup === 'breakpoint-edit') {
+      return this.editingBreakpointId === (data.breakpointId || null);
+    } else if (popup === 'color-picker') {
+      return this.colorPickerType === (data.type || null);
+    } else if (popup === 'shortcuts') {
+      return true; // Shortcuts popup has no data variants
+    }
+    return false;
   }
 
   /**
@@ -201,6 +234,7 @@ class AppState {
   closePopup() {
     this.activePopup = null;
     this.editingBreakpointId = null;
+    this.colorPickerType = null;
   }
 
   /**

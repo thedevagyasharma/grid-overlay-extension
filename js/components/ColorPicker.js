@@ -6,12 +6,12 @@ class ColorPickerComponent {
   constructor(config) {
     this.label = config.label;
     this.title = config.title || config.label + ' Color';
+    this.type = config.type; // 'grid' or 'padding'
     this.initialColor = config.color || '#ff0000';
     this.initialOpacity = config.opacity !== undefined ? config.opacity : 1;
     this.onChange = config.onChange || (() => {});
     this.currentColor = this.initialColor;
     this.currentOpacity = this.initialOpacity;
-    this.popup = null;
 
     this.element = this.render();
     this.attachEvents();
@@ -60,30 +60,9 @@ class ColorPickerComponent {
   }
 
   openPopup() {
-    // Close existing popup if any
-    if (this.popup) {
-      this.popup.close();
-    }
-
-    // Create new popup
-    this.popup = new ColorPickerPopupComponent({
-      title: this.title,
-      color: this.currentColor,
-      opacity: this.currentOpacity,
-      onChange: ({ color, opacity }) => {
-        this.currentColor = color;
-        this.currentOpacity = opacity;
-        this.updatePreview();
-        this.onChange({ color, opacity });
-      },
-      onClose: () => {
-        this.popup = null;
-      }
-    });
-
-    // Show popup to the left of the container
-    const parent = this.element.parentElement;
-    this.popup.show(parent);
+    // Use the global popup system with toggle support
+    const shouldOpen = appState.openPopup('color-picker', { type: this.type });
+    ViewRouter.renderPopup();
   }
 
   updatePreview() {
@@ -95,10 +74,5 @@ class ColorPickerComponent {
     this.currentColor = color;
     this.currentOpacity = opacity;
     this.updatePreview();
-
-    // Update popup if it's open
-    if (this.popup) {
-      this.popup.setValue(color, opacity);
-    }
   }
 }
