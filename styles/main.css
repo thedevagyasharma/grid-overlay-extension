@@ -107,6 +107,7 @@
 }
 
 .go-ext-controls {
+  position: relative; /* Make this the positioning context for popups */
   flex: 1;
   background: var(--color-neutral-900);
   color: white;
@@ -804,19 +805,23 @@
 
 /* ===== Popup Frame ===== */
 .go-ext-popup-frame {
-  position: absolute;
-  top: 0;
-  right: calc(100% + 12px);
+  position: fixed;
+  /* Align with .go-ext-controls panel, not the wrapper */
+  /* Calculate: viewport right (20px) + wrapper width (360px) + gap (12px) + minimize button (36px) + gap (8px) */
+  top: calc(20px + 36px + 8px); /* wrapper top + minimize button height + gap */
+  right: calc(20px + 360px + 12px); /* viewport right + wrapper width + gap */
   width: 260px;
   background: var(--color-neutral-900);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  max-height: calc(100vh - 40px - 36px - 8px); /* viewport height - margins - minimize button - gap */
   opacity: 0;
   transform: translateX(20px);
   transition: all 0.2s;
+  z-index: var(--go-ext-z-index-container);
+  pointer-events: auto;
 }
 
 .go-ext-popup-frame.go-ext-popup-open {
