@@ -22,8 +22,7 @@ class ViewRouter {
       return;
     }
 
-    // Clear existing content but keep popup if exists
-    const existingPopup = this.containerElement.querySelector('.go-ext-popup-frame');
+    // Clear existing content (popups are in document.body, not containerElement)
     this.containerElement.innerHTML = '';
 
     // Create and render appropriate screen
@@ -47,11 +46,6 @@ class ViewRouter {
     this.currentScreenInstance = screen;
     const screenElement = screen.render();
     this.containerElement.appendChild(screenElement);
-
-    // Re-add popup if it existed
-    if (existingPopup) {
-      this.containerElement.insertBefore(existingPopup, this.containerElement.firstChild);
-    }
   }
 
   /**
@@ -83,8 +77,21 @@ class ViewRouter {
       return;
     }
 
-    // Remove existing popup
-    const existingPopup = this.containerElement.querySelector('.go-ext-popup-frame');
+    // Popups are appended to document.body, not containerElement
+    const existingPopup = document.body.querySelector('.go-ext-popup-frame');
+
+    // If no active popup, close existing with animation
+    if (!appState.activePopup) {
+      if (existingPopup) {
+        existingPopup.classList.add('go-ext-popup-closing');
+        setTimeout(() => {
+          existingPopup.remove();
+        }, 200);
+      }
+      return;
+    }
+
+    // If popup is being replaced, remove old one and render new one
     if (existingPopup) {
       existingPopup.remove();
     }
@@ -98,7 +105,11 @@ class ViewRouter {
       case 'shortcuts':
         popup = new KeyboardShortcutsPopup();
         break;
+      case 'color-picker':
+        popup = this._createColorPickerPopup();
+        break;
       default:
+        console.warn(`Unknown popup type: ${appState.activePopup}`);
         return;
     }
 
@@ -106,6 +117,48 @@ class ViewRouter {
     if (popupElement) {
       popup.show(this.containerElement);
     }
+  }
+
+  /**
+   * Create color picker popup based on type
+   */
+  static _createColorPickerPopup() {
+    const preset = appState.getCurrentPreset();
+    if (!preset) return null;
+
+    const isGridPicker = appState.colorPickerType === 'grid';
+    const title = isGridPicker ? 'Grid Color' : 'Padding Color';
+    const color = isGridPicker ? preset.colors.grid : preset.colors.padding;
+    const opacity = isGridPicker ? preset.colors.gridOpacity : preset.colors.paddingOpacity;
+
+    return new ColorPickerPopupComponent({
+      title,
+      color,
+      opacity,
+      onChange: ({ color: newColor, opacity: newOpacity }) => {
+        if (isGridPicker) {
+          preset.colors.grid = newColor;
+          preset.colors.gridOpacity = newOpacity;
+        } else {
+          preset.colors.padding = newColor;
+          preset.colors.paddingOpacity = newOpacity;
+        }
+        StorageManager.savePresets();
+
+        // Redraw grid
+        if (window.gridRenderer) {
+          window.gridRenderer.draw();
+        }
+
+        // Update the color picker component display
+        if (this.currentScreenInstance && this.currentScreenInstance.update) {
+          this.currentScreenInstance.update();
+        }
+      },
+      onClose: () => {
+        appState.closePopup();
+      }
+    });
   }
 
   /**
@@ -121,9 +174,13 @@ class ViewRouter {
    * Close popup
    */
   static closePopup() {
-    const existingPopup = this.containerElement.querySelector('.go-ext-popup-frame');
+    // Popups are appended to document.body, not containerElement
+    const existingPopup = document.body.querySelector('.go-ext-popup-frame');
     if (existingPopup) {
-      existingPopup.remove();
+      existingPopup.classList.add('go-ext-popup-closing');
+      setTimeout(() => {
+        existingPopup.remove();
+      }, 200);
     }
     appState.closePopup();
   }

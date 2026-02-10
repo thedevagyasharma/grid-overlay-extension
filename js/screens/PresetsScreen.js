@@ -82,12 +82,8 @@ class PresetsScreen {
   attachEvents() {
     // Keyboard shortcuts button - toggle
     this.keyboardBtn.addEventListener('click', () => {
-      if (appState.activePopup === 'shortcuts') {
-        ViewRouter.closePopup();
-      } else {
-        appState.openPopup('shortcuts');
-        ViewRouter.renderPopup();
-      }
+      const shouldOpen = appState.openPopup('shortcuts');
+      ViewRouter.renderPopup();
     });
 
     // Privacy link opens in new tab (handled by target="_blank" attribute)
