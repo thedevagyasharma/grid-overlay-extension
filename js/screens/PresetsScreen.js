@@ -169,6 +169,7 @@ class PresetsScreen {
 
     card.addEventListener('click', () => {
       appState.currentPresetId = preset.id;
+      StorageManager.savePresets(); // Save the active preset
       appState.navigateTo('breakpoints');
       ViewRouter.render();
     });
