@@ -66,10 +66,31 @@ class BreakpointsScreen {
       className: 'go-ext-breakpoints-section'
     });
 
+    const sectionLabelRow = createElement('div', {
+      className: 'go-ext-breakpoints-label-row'
+    });
+
     const sectionLabel = createElement('h2', {
       className: 'go-ext-section-label',
       textContent: 'BREAKPOINTS'
     });
+
+    const warningWrapper = createElement('div', {
+      className: 'go-ext-header-warning'
+    });
+    const warningBtn = createElement('button', {
+      className: 'go-ext-icon-button go-ext-header-warning-btn',
+      type: 'button'
+    });
+    warningBtn.appendChild(Icons.triangleAlert());
+    const warningTooltip = createElement('div', {
+      className: 'go-ext-header-warning-tooltip'
+    });
+    warningWrapper.appendChild(warningBtn);
+    warningWrapper.appendChild(warningTooltip);
+
+    sectionLabelRow.appendChild(sectionLabel);
+    sectionLabelRow.appendChild(warningWrapper);
 
     const breakpointsList = createElement('div', {
       className: 'go-ext-breakpoints-list',
@@ -83,7 +104,7 @@ class BreakpointsScreen {
     addBreakpointBtn.appendChild(Icons.plus());
     addBreakpointBtn.appendChild(document.createTextNode(' Add Breakpoint'));
 
-    breakpointsSection.appendChild(sectionLabel);
+    breakpointsSection.appendChild(sectionLabelRow);
     breakpointsSection.appendChild(breakpointsList);
     breakpointsSection.appendChild(addBreakpointBtn);
 
@@ -140,6 +161,8 @@ class BreakpointsScreen {
     this.colorsGrid = colorsGrid;
     this.keyboardBtn = keyboardBtn;
     this.privacyLink = privacyLink;
+    this.warningWrapper = warningWrapper;
+    this.warningTooltip = warningTooltip;
 
     this.attachEvents();
     this.renderBreakpoints();
@@ -192,6 +215,8 @@ class BreakpointsScreen {
       if (breakpoint) {
         StorageManager.savePresets();
         this.renderBreakpoints();
+        appState.openPopup('breakpoint-edit', { breakpointId: breakpoint.id });
+        ViewRouter.renderPopup();
 
         // Redraw grid
         if (window.gridRenderer) {
@@ -238,6 +263,7 @@ class BreakpointsScreen {
         textContent: 'No breakpoints yet. Add one to get started!'
       });
       this.breakpointsList.appendChild(emptyState);
+      this.updateDuplicateWarning();
       return;
     }
 
@@ -248,6 +274,63 @@ class BreakpointsScreen {
       const item = this.createBreakpointItem(breakpoint, isActive);
       this.breakpointsList.appendChild(item);
     });
+
+    this.updateDuplicateWarning();
+  }
+
+  updateDuplicateWarning() {
+    if (!this.warningWrapper || !this.warningTooltip) return;
+    const preset = appState.getCurrentPreset();
+
+    if (!preset || preset.breakpoints.length < 2) {
+      this.warningWrapper.classList.remove('visible');
+      return;
+    }
+
+    // Group breakpoints by minWidth, keep only groups with duplicates
+    const widthMap = {};
+    preset.breakpoints.forEach(bp => {
+      if (!widthMap[bp.minWidth]) widthMap[bp.minWidth] = [];
+      widthMap[bp.minWidth].push(bp);
+    });
+    const duplicateGroups = Object.entries(widthMap).filter(([, g]) => g.length > 1);
+
+    if (duplicateGroups.length === 0) {
+      this.warningWrapper.classList.remove('visible');
+      return;
+    }
+
+    // Build tooltip content
+    this.warningTooltip.innerHTML = '';
+
+    duplicateGroups.forEach(([width, group], i) => {
+      if (i > 0) {
+        this.warningTooltip.appendChild(createElement('div', {
+          className: 'go-ext-warning-tooltip-divider'
+        }));
+      }
+
+      this.warningTooltip.appendChild(createElement('div', {
+        className: 'go-ext-warning-tooltip-header',
+        textContent: `Duplicate min-width: ${width}px`
+      }));
+
+      group.forEach(bp => {
+        this.warningTooltip.appendChild(createElement('div', {
+          className: 'go-ext-warning-tooltip-item',
+          textContent: bp.name
+        }));
+      });
+
+      const unreachable = group.slice(0, -1);
+      const names = unreachable.map(bp => bp.name).join(' and ');
+      this.warningTooltip.appendChild(createElement('div', {
+        className: 'go-ext-warning-tooltip-footer',
+        textContent: `${names} will remain unreachable until fixed.`
+      }));
+    });
+
+    this.warningWrapper.classList.add('visible');
   }
 
   createBreakpointItem(breakpoint, isActive) {
@@ -271,7 +354,7 @@ class BreakpointsScreen {
     });
 
     const maxWidth = this.getBreakpointMaxWidth(breakpoint);
-    const rangeText = maxWidth === '∞'
+    const rangeText = (maxWidth === '∞' || maxWidth < breakpoint.minWidth)
       ? `${breakpoint.minWidth}px+`
       : `${breakpoint.minWidth}-${maxWidth}px`;
 

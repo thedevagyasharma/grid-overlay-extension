@@ -34,6 +34,9 @@
 
   --color-red-500: #ef4444;
   --color-red-600: #dc2626;
+
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
 }
 
 /* ===== Base Styles ===== */
@@ -45,6 +48,7 @@
   pointer-events: none;
   z-index: var(--go-ext-z-index-container);
   display: none;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .go-ext-container.go-ext-active {
@@ -112,7 +116,7 @@
   background: var(--color-neutral-900);
   color: white;
   border-radius: 16px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
   font-size: 14px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -373,6 +377,90 @@
   color: var(--color-neutral-400);
 }
 
+.go-ext-breakpoints-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 12px 0;
+}
+
+.go-ext-breakpoints-label-row .go-ext-section-label {
+  margin: 0;
+}
+
+.go-ext-header-warning {
+  position: relative;
+  display: none;
+}
+
+.go-ext-header-warning.visible {
+  display: flex;
+  align-items: center;
+}
+
+.go-ext-header-warning-btn {
+  color: var(--color-amber-400);
+}
+
+.go-ext-header-warning-btn:hover {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--color-amber-400);
+}
+
+.go-ext-header-warning-tooltip {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-neutral-700);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--color-neutral-300);
+  min-width: 160px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+
+.go-ext-header-warning:hover .go-ext-header-warning-tooltip {
+  opacity: 1;
+}
+
+.go-ext-warning-tooltip-header {
+  font-weight: 500;
+  color: var(--color-neutral-200);
+  margin-bottom: 4px;
+}
+
+.go-ext-warning-tooltip-item {
+  padding-left: 10px;
+  position: relative;
+  color: var(--color-neutral-400);
+  line-height: 1.6;
+}
+
+.go-ext-warning-tooltip-item::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-amber-400);
+}
+
+.go-ext-warning-tooltip-divider {
+  height: 1px;
+  background: var(--color-neutral-700);
+  margin: 6px 0;
+}
+
+.go-ext-warning-tooltip-footer {
+  color: var(--color-neutral-500);
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid var(--color-neutral-700);
+}
+
 .go-ext-breakpoint-item-right {
   display: flex;
   align-items: center;
@@ -600,9 +688,10 @@
   border: 1px solid var(--color-neutral-700);
   border-radius: 6px;
   color: var(--color-neutral-300);
+  font-family: inherit;
   font-size: 13px;
   font-weight: 400;
-  font-family: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
+  line-height: 1;
 }
 
 .go-ext-color-picker-hex-input:focus {
@@ -678,7 +767,6 @@
 }
 
 .go-ext-color-picker-popup__input-group .go-ext-input {
-  font-family: 'Geist Mono', 'SF Mono', Monaco, Consolas, monospace;
   font-size: 13px;
 }
 
@@ -763,31 +851,32 @@
   min-width: 0;
 }
 
-.go-ext-editable-header-display {
+.go-ext-editable-header-text {
+  width: 100%;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 8px;
   font-size: 20px;
   font-weight: 400;
+  line-height: 28px;
   color: var(--color-neutral-300);
   cursor: pointer;
-  display: block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: background 0.2s;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  outline: none;
+  transition: all 0.2s;
 }
 
-.go-ext-editable-header-display:hover {
+.go-ext-editable-header-text:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.go-ext-editable-header-input {
-  width: 100%;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--color-neutral-300);
-  background: transparent;
-  border: 2px solid var(--color-blue-500);
-  border-radius: 6px;
-  padding: 4px 8px;
-  outline: none;
+.go-ext-editable-header-text.editing {
+  background: var(--color-neutral-700);
+  border-color: var(--color-blue-500);
+  cursor: text;
 }
 
 /* ===== Privacy Link ===== */
@@ -805,6 +894,7 @@
 
 /* ===== Popup Frame ===== */
 .go-ext-popup-frame {
+  font-family: 'Inter', system-ui, sans-serif;
   position: fixed;
   /* Align with .go-ext-controls panel, not the wrapper */
   /* Calculate: viewport right (20px) + wrapper width (360px) + gap (12px) + minimize button (36px) + gap (8px) */
@@ -920,8 +1010,10 @@
   background: transparent;
   border: none;
   color: var(--color-neutral-300);
+  font-family: inherit;
   font-size: 14px;
   font-weight: 400;
+  line-height: 1;
   text-align: right;
   outline: none;
   -webkit-appearance: none;
@@ -946,6 +1038,17 @@
   font-size: 11px;
   font-weight: 400;
   color: var(--color-neutral-400);
+}
+
+.go-ext-form-warning {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-amber-400);
+  display: none;
+}
+
+.go-ext-form-warning.visible {
+  display: block;
 }
 
 /* ===== Keyboard Shortcuts ===== */
@@ -1072,7 +1175,7 @@
   color: #fff;
   padding: 12px 20px;
   border-radius: 10px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
   pointer-events: none;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
@@ -1091,7 +1194,7 @@
   color: #fff;
   font-weight: 600;
   font-size: 16px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
 }
 
 .go-ext-indicator-separator {
@@ -1103,7 +1206,7 @@
   color: var(--color-blue-500);
   font-weight: 600;
   font-size: 12px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1112,7 +1215,7 @@
   color: #888;
   font-weight: 500;
   font-size: 11px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
 }
 
 /* ===== Icon Styling ===== */

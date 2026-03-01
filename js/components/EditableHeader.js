@@ -19,74 +19,79 @@ class EditableHeaderComponent {
       className: 'go-ext-editable-header'
     });
 
-    const display = createElement('span', {
-      className: 'go-ext-editable-header-display',
+    const el = createElement('div', {
+      className: 'go-ext-editable-header-text',
       textContent: this.text || this.placeholder
     });
+    el.contentEditable = 'false';
 
-    const input = createElement('input', {
-      type: 'text',
-      className: 'go-ext-editable-header-input',
-      value: this.text
-    });
-    input.style.display = 'none';
-
-    container.appendChild(display);
-    container.appendChild(input);
-
-    this.display = display;
-    this.input = input;
+    container.appendChild(el);
+    this.el = el;
 
     return container;
   }
 
   attachEvents() {
-    // Click to edit
-    this.display.addEventListener('click', () => {
-      this.startEditing();
+    this.el.addEventListener('click', () => {
+      if (!this.isEditing) this.startEditing();
     });
 
-    // Save on blur
-    this.input.addEventListener('blur', () => {
+    this.el.addEventListener('blur', () => {
       this.stopEditing();
     });
 
-    // Save on Enter
-    this.input.addEventListener('keydown', (e) => {
+    this.el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        this.stopEditing();
+        e.preventDefault();
+        this.el.blur();
       } else if (e.key === 'Escape') {
-        this.input.value = this.text;
-        this.stopEditing();
+        this.el.textContent = this.text || this.placeholder;
+        this.isEditing = false;
+        this.el.blur();
       }
+    });
+
+    this.el.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text/plain');
+      document.execCommand('insertText', false, text);
     });
   }
 
   startEditing() {
     this.isEditing = true;
-    this.display.style.display = 'none';
-    this.input.style.display = 'block';
-    this.input.focus();
-    this.input.select();
+    this.el.contentEditable = 'true';
+    this.el.classList.add('editing');
+
+    const range = document.createRange();
+    range.selectNodeContents(this.el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    this.el.focus();
   }
 
   stopEditing() {
+    if (!this.isEditing) return;
     this.isEditing = false;
-    const newText = this.input.value.trim();
+
+    const newText = this.el.textContent.trim();
+    this.el.contentEditable = 'false';
+    this.el.classList.remove('editing');
 
     if (newText && newText !== this.text) {
       this.text = newText;
       this.onChange(newText);
     }
 
-    this.display.textContent = this.text || this.placeholder;
-    this.input.style.display = 'none';
-    this.display.style.display = 'block';
+    this.el.textContent = this.text || this.placeholder;
   }
 
   setText(text) {
     this.text = text;
-    this.input.value = text;
-    this.display.textContent = text || this.placeholder;
+    if (!this.isEditing) {
+      this.el.textContent = text || this.placeholder;
+    }
   }
 }

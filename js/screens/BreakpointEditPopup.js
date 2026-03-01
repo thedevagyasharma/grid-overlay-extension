@@ -114,7 +114,7 @@ class BreakpointEditPopup {
     // Auto-save on input
     const debouncedSave = debounce(() => {
       const value = parseInt(input.value) || 0;
-      this.breakpoint[field.id] = value;
+      appState.updateBreakpoint(this.breakpoint.id, { [field.id]: value });
       StorageManager.savePresets();
       ViewRouter.updateCurrentScreen();
 
@@ -125,6 +125,27 @@ class BreakpointEditPopup {
     }, 300);
 
     input.addEventListener('input', debouncedSave);
+
+    // Duplicate min-width warning (minWidth field only)
+    if (field.id === 'minWidth') {
+      const warningEl = createElement('span', {
+        className: 'go-ext-form-warning',
+        textContent: 'Another breakpoint uses this min-width. This breakpoint will be unreachable.'
+      });
+      group.appendChild(warningEl);
+
+      const checkDuplicate = () => {
+        const value = parseInt(input.value) || 0;
+        const preset = appState.getCurrentPreset();
+        const hasDuplicate = preset && preset.breakpoints.some(
+          bp => bp.id !== this.breakpoint.id && bp.minWidth === value
+        );
+        warningEl.classList.toggle('visible', hasDuplicate);
+      };
+
+      input.addEventListener('input', checkDuplicate);
+      checkDuplicate();
+    }
 
     return group;
   }

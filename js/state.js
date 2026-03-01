@@ -68,7 +68,19 @@ class AppState {
     const preset = {
       id: this.generateId(),
       name: uniqueName,
-      breakpoints: [],
+      breakpoints: [
+        {
+          id: this.generateId(),
+          name: 'Breakpoint 1',
+          minWidth: window.innerWidth,
+          columns: 12,
+          gutter: 16,
+          rowGap: 8,
+          margin: 32,
+          maxWidth: 0,
+          padding: 0
+        }
+      ],
       colors: {
         grid: '#ff0000',
         gridOpacity: 0.15,
