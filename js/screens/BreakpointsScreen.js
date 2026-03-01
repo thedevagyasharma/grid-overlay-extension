@@ -435,6 +435,7 @@ class BreakpointsScreen {
         appState.deleteBreakpoint(breakpoint.id);
         StorageManager.savePresets();
         this.renderBreakpoints();
+        ViewRouter.renderPopup();
 
         // Redraw grid
         if (window.gridRenderer) {

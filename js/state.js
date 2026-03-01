@@ -156,6 +156,10 @@ class AppState {
     if (index > -1) {
       preset.breakpoints.splice(index, 1);
     }
+
+    if (this.activePopup === 'breakpoint-edit' && this.editingBreakpointId === id) {
+      this.closePopup();
+    }
   }
 
   /**
