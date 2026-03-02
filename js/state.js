@@ -37,12 +37,14 @@ class AppState {
     const preset = this.getCurrentPreset();
     if (!preset || !preset.breakpoints.length) return null;
 
-    const width = window.innerWidth;
     let matchingIndex = 0;
 
     for (let i = preset.breakpoints.length - 1; i >= 0; i--) {
       const bp = preset.breakpoints[i];
-      if (width >= bp.minWidth) {
+      const minWidthStr = typeof bp.minWidth === 'number'
+        ? `${bp.minWidth}px`
+        : (String(bp.minWidth || '0px'));
+      if (window.matchMedia(`(min-width: ${minWidthStr})`).matches) {
         matchingIndex = i;
         break;
       }
@@ -140,7 +142,7 @@ class AppState {
     };
 
     preset.breakpoints.push(breakpoint);
-    preset.breakpoints.sort((a, b) => a.minWidth - b.minWidth);
+    preset.breakpoints.sort((a, b) => resolveCSSLengthToPx(a.minWidth) - resolveCSSLengthToPx(b.minWidth));
 
     return breakpoint;
   }
@@ -173,7 +175,7 @@ class AppState {
       // Re-sort if minWidth changed
       if (updates.minWidth !== undefined) {
         const preset = this.getCurrentPreset();
-        preset.breakpoints.sort((a, b) => a.minWidth - b.minWidth);
+        preset.breakpoints.sort((a, b) => resolveCSSLengthToPx(a.minWidth) - resolveCSSLengthToPx(b.minWidth));
       }
     }
   }

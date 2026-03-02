@@ -287,11 +287,12 @@ class BreakpointsScreen {
       return;
     }
 
-    // Group breakpoints by minWidth, keep only groups with duplicates
+    // Group breakpoints by resolved px min-width, keep only groups with duplicates
     const widthMap = {};
     preset.breakpoints.forEach(bp => {
-      if (!widthMap[bp.minWidth]) widthMap[bp.minWidth] = [];
-      widthMap[bp.minWidth].push(bp);
+      const px = Math.round(resolveCSSLengthToPx(bp.minWidth));
+      if (!widthMap[px]) widthMap[px] = [];
+      widthMap[px].push(bp);
     });
     const duplicateGroups = Object.entries(widthMap).filter(([, g]) => g.length > 1);
 
@@ -353,10 +354,43 @@ class BreakpointsScreen {
       textContent: breakpoint.name
     });
 
-    const maxWidth = this.getBreakpointMaxWidth(breakpoint);
-    const rangeText = (maxWidth === '∞' || maxWidth < breakpoint.minWidth)
-      ? `${breakpoint.minWidth}px+`
-      : `${breakpoint.minWidth}-${maxWidth}px`;
+    const preset = appState.getCurrentPreset();
+    const bpIndex = preset ? preset.breakpoints.indexOf(breakpoint) : -1;
+    const nextBp = preset && bpIndex >= 0 ? preset.breakpoints[bpIndex + 1] : null;
+
+    const minDisplay = typeof breakpoint.minWidth === 'number'
+      ? `${breakpoint.minWidth}px`
+      : String(breakpoint.minWidth);
+    const minPx = resolveCSSLengthToPx(breakpoint.minWidth);
+
+    let rangeText;
+    if (!nextBp) {
+      rangeText = `${minDisplay}+`;
+    } else {
+      const nextMinPx = resolveCSSLengthToPx(nextBp.minWidth);
+      if (minPx >= nextMinPx) {
+        // Degenerate: duplicate or inverted minWidth
+        rangeText = `${minDisplay}+`;
+      } else {
+        const currentUnit = splitCSSLength(breakpoint.minWidth).unit;
+        const nextUnit = splitCSSLength(nextBp.minWidth).unit;
+        if (currentUnit && currentUnit === nextUnit) {
+          const nextDisplay = typeof nextBp.minWidth === 'number'
+            ? `${nextBp.minWidth}px`
+            : String(nextBp.minWidth);
+          if (currentUnit === 'px') {
+            // px: show exclusive upper bound (last pixel before next threshold)
+            rangeText = `${minDisplay} \u2013 ${parseFloat(nextDisplay) - 1}px`;
+          } else {
+            // rem/em/etc: subtracting 1px produces awkward decimals; show next threshold directly
+            rangeText = `${minDisplay} \u2013 ${nextDisplay}`;
+          }
+        } else {
+          // Mixed units: resolve upper bound to px
+          rangeText = `${minDisplay} \u2013 ${Math.round(nextMinPx) - 1}px`;
+        }
+      }
+    }
 
     const meta = createElement('span', {
       className: 'go-ext-breakpoint-meta',
@@ -412,7 +446,7 @@ class BreakpointsScreen {
     const index = preset.breakpoints.indexOf(breakpoint);
     const nextBreakpoint = preset.breakpoints[index + 1];
 
-    return nextBreakpoint ? nextBreakpoint.minWidth - 1 : '∞';
+    return nextBreakpoint ? Math.round(resolveCSSLengthToPx(nextBreakpoint.minWidth)) - 1 : '∞';
   }
 
   confirmDeleteBreakpoint(breakpoint) {
