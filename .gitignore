@@ -8,6 +8,12 @@ modules/
 # Landing page (local only)
 landing-page/
 
+# Test infrastructure
+node_modules/
+package-lock.json
+test-results/
+tests/
+
 # Development files
 .claude/
 asset-generator/
