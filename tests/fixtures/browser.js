@@ -1,79 +1,45 @@
 const { chromium } = require('@playwright/test');
-const path = require('path');
-const os = require('os');
 
-const EXTENSION_PATH = path.resolve(__dirname, '../..');
-const TEST_URL = 'http://localhost:3001/test-ui.html';
-// Persistent profile dir — keeps extension prefs between runs without
-// re-downloading extension on every test. Lives outside the repo.
-const USER_DATA_DIR = path.join(os.tmpdir(), 'go-ext-playwright-profile');
+// tests/test-page.html loads all extension scripts via <script> tags in manifest order.
+// They all run in the main page JS world, making appState, ViewRouter, etc. directly
+// accessible via page.evaluate() — no postMessage bridge needed.
+const TEST_URL = 'http://localhost:3001/tests/test-page.html';
 
 /**
- * Launch Chrome with the extension loaded.
- * Returns { context, page } — page is already at TEST_URL with the
- * extension controls visible.
+ * Launch a standard Chromium browser and navigate to the test page.
  */
-async function launchWithExtension() {
-  const context = await chromium.launchPersistentContext(USER_DATA_DIR, {
-    headless: false,
-    args: [
-      `--disable-extensions-except=${EXTENSION_PATH}`,
-      `--load-extension=${EXTENSION_PATH}`,
-      '--no-sandbox',
-    ],
-  });
-  const page = await context.newPage();
-  await page.goto(TEST_URL);
-  // Wait for the extension to inject its panel (DOM is shared across worlds)
+async function launchBrowser() {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  // waitUntil: 'domcontentloaded' avoids blocking on external resources (Google Fonts)
+  await page.goto(TEST_URL, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('.go-ext-controls-wrapper', { timeout: 15000 });
-  // Confirm the test bridge is responding before proceeding
-  await extEval(page, 'ping');
-  return { context, page };
+  return { browser, page };
 }
-
-// ---------------------------------------------------------------------------
-// postMessage bridge
-// ---------------------------------------------------------------------------
-// Content scripts run in an isolated JS world; page.evaluate() runs in the
-// main world. Both worlds share the DOM event system, so postMessage lets
-// the test drive the extension's internal state.
 
 /**
- * Send a command to the extension's content script and return its result.
- * Throws if the extension returns an error or if no response arrives in 5 s.
+ * Reset all extension state without reloading the page.
+ * Clears localStorage, resets appState fields, removes any open popups, re-renders.
  */
-async function extEval(page, cmd, args = {}) {
-  return await page.evaluate(({ cmd, args }) => {
-    return new Promise((resolve, reject) => {
-      const id = `${Date.now()}-${Math.random()}`;
-
-      const handler = (event) => {
-        if (event.data?.__goExtSource__ === 'extension' && event.data.id === id) {
-          window.removeEventListener('message', handler);
-          clearTimeout(timer);
-          if (event.data.error) reject(new Error(event.data.error));
-          else resolve(event.data.result);
-        }
-      };
-
-      const timer = setTimeout(() => {
-        window.removeEventListener('message', handler);
-        reject(new Error(`extEval timeout waiting for response to: ${cmd}`));
-      }, 5000);
-
-      window.addEventListener('message', handler);
-      window.postMessage({ __goExtSource__: 'playwright-test', id, cmd, args }, '*');
-    });
-  }, { cmd, args });
-}
-
-// ---------------------------------------------------------------------------
-// Test helpers
-// ---------------------------------------------------------------------------
-
-/** Clear all extension state without reloading the page. */
 async function resetState(page) {
-  await extEval(page, 'resetState');
+  await page.evaluate(() => {
+    localStorage.clear();
+    appState.presets = [];
+    appState.currentPresetId = null;
+    appState.currentView = 'presets';
+    appState.activePopup = null;
+    appState.editingBreakpointId = null;
+    appState.colorPickerType = null;
+    appState.gridEnabled = false;
+    appState.gridVisible = true;
+    appState.indicatorVisible = true;
+    appState.confirmDialog = null;
+    document.querySelectorAll('.go-ext-popup-frame').forEach(el => el.remove());
+    // Reset minimize state
+    const wrapper = document.querySelector('.go-ext-controls-wrapper');
+    if (wrapper) wrapper.classList.remove('go-ext-controls-minimized');
+    ViewRouter.render();
+  });
 }
 
 /**
@@ -81,10 +47,13 @@ async function resetState(page) {
  * @param {string} minWidth  Initial minWidth for the default breakpoint.
  */
 async function setupPresetWithBreakpoint(page, minWidth = '0px') {
-  const presetId = await extEval(page, 'createPreset', { name: 'Test Preset' });
-  const bps = await extEval(page, 'getBreakpoints');
-  await extEval(page, 'updateBreakpoint', { id: bps[0].id, updates: { minWidth } });
-  await extEval(page, 'navigateTo', { view: 'breakpoints' });
+  await page.evaluate((minWidth) => {
+    const preset = appState.createPreset('Test Preset');
+    appState.currentPresetId = preset.id;
+    appState.updateBreakpoint(preset.breakpoints[0].id, { minWidth });
+    appState.navigateTo('breakpoints');
+    ViewRouter.render();
+  }, minWidth);
 }
 
 /**
@@ -92,16 +61,41 @@ async function setupPresetWithBreakpoint(page, minWidth = '0px') {
  * Waits for the form to be visible before returning.
  */
 async function openEditPopup(page, bpIndex = 0) {
-  const bps = await extEval(page, 'getBreakpoints');
-  await extEval(page, 'openEditPopup', { breakpointId: bps[bpIndex].id });
+  await page.evaluate((bpIndex) => {
+    const bp = appState.getCurrentPreset().breakpoints[bpIndex];
+    appState.openPopup('breakpoint-edit', { breakpointId: bp.id });
+    ViewRouter.renderPopup();
+  }, bpIndex);
   await page.waitForSelector('#go-ext-edit-minWidth');
 }
 
+/**
+ * Set breakpoints on the current preset from a plain array of { name, minWidth } objects.
+ * Existing breakpoints are replaced. Re-renders after.
+ */
+async function setBreakpoints(page, breakpoints) {
+  await page.evaluate((bps) => {
+    const preset = appState.getCurrentPreset();
+    preset.breakpoints = bps.map(bp => ({
+      id: appState.generateId(),
+      name: bp.name,
+      minWidth: bp.minWidth,
+      columns: bp.columns !== undefined ? bp.columns : 12,
+      gutter: '16px',
+      rowGap: '8px',
+      margin: '32px',
+      maxWidth: 0,
+      padding: 0,
+    }));
+    ViewRouter.render();
+  }, breakpoints);
+}
+
 module.exports = {
-  launchWithExtension,
+  launchBrowser,
   resetState,
   setupPresetWithBreakpoint,
   openEditPopup,
-  extEval,
+  setBreakpoints,
   TEST_URL,
 };

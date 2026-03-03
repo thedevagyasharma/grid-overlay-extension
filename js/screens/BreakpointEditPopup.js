@@ -176,7 +176,8 @@ class BreakpointEditPopup {
         // e.g. "1" with badge "rem" → "1rem", "540/16" with badge "rem" → "540/16rem"
         const hasOps = /[+\-*/()]/.test(typed) && !/^-?\d+(\.\d+)?$/.test(typed);
         const isBareNumber = /^-?\d+(\.\d+)?$/.test(typed);
-        if ((hasOps || isBareNumber) && !/[a-z%]$/i.test(typed)) {
+        const isCSSFunction = /^(calc|clamp|min|max)\s*\(/i.test(typed);
+        if ((hasOps || isBareNumber) && !isCSSFunction && !/[a-z%]$/i.test(typed)) {
           const badgeUnit = unitEl.textContent;
           if (badgeUnit && !/^(calc|clamp|min|max)$/.test(badgeUnit)) typed += badgeUnit;
         }
@@ -230,15 +231,34 @@ class BreakpointEditPopup {
         }));
       }
 
+      const errorEl = createElement('span', {
+        className: 'go-ext-form-error',
+        textContent: `Enter a whole number between ${field.min} and ${field.max}.`
+      });
+      group.appendChild(errorEl);
+
       const debouncedSave = debounce(() => {
-        const value = parseInt(input.value) || 0;
-        appState.updateBreakpoint(this.breakpoint.id, { [field.id]: value });
+        const raw = parseInt(input.value);
+        if (isNaN(raw) || raw < field.min || raw > field.max) {
+          inputWrapper.classList.remove('invalid');
+          void inputWrapper.offsetWidth;
+          inputWrapper.classList.add('invalid');
+          errorEl.classList.add('visible');
+          return;
+        }
+        inputWrapper.classList.remove('invalid');
+        errorEl.classList.remove('visible');
+        appState.updateBreakpoint(this.breakpoint.id, { [field.id]: raw });
         StorageManager.savePresets();
         ViewRouter.updateCurrentScreen();
         if (window.gridRenderer) window.gridRenderer.draw();
       }, 300);
 
-      input.addEventListener('input', debouncedSave);
+      input.addEventListener('input', () => {
+        inputWrapper.classList.remove('invalid');
+        errorEl.classList.remove('visible');
+        debouncedSave();
+      });
     }
 
     return group;
