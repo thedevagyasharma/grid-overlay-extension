@@ -89,9 +89,8 @@ class PopupFrameComponent {
   }
 
   show(parent) {
-    // Append to document body since popup is now fixed positioned
-    // parent parameter kept for compatibility but not used
-    document.body.appendChild(this.element);
+    const container = window.goExtPopupContainer || document.body;
+    container.appendChild(this.element);
     // Trigger animation
     setTimeout(() => {
       this.element.classList.add('go-ext-popup-open');

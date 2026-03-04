@@ -110,6 +110,10 @@
   display: none;
 }
 
+.go-ext-controls-wrapper.go-ext-controls-minimized .go-ext-popup-container {
+  display: none;
+}
+
 .go-ext-controls {
   position: relative; /* Make this the positioning context for popups */
   flex: 1;

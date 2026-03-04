@@ -48,7 +48,7 @@ class BreakpointEditPopup {
       onChange: (newName) => {
         this.breakpoint.name = newName;
         StorageManager.savePresets();
-        ViewRouter.updateCurrentScreen();
+        ViewRouter.updateAll();
       }
     });
 
@@ -198,7 +198,7 @@ class BreakpointEditPopup {
         normalizeDisplay(raw);
         appState.updateBreakpoint(this.breakpoint.id, { [field.id]: value });
         StorageManager.savePresets();
-        ViewRouter.updateCurrentScreen();
+        ViewRouter.updateAll();
         if (window.gridRenderer) window.gridRenderer.draw();
       });
 
@@ -250,7 +250,7 @@ class BreakpointEditPopup {
         errorEl.classList.remove('visible');
         appState.updateBreakpoint(this.breakpoint.id, { [field.id]: raw });
         StorageManager.savePresets();
-        ViewRouter.updateCurrentScreen();
+        ViewRouter.updateAll();
         if (window.gridRenderer) window.gridRenderer.draw();
       }, 300);
 

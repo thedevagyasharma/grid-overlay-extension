@@ -97,6 +97,11 @@
       controlsContent.className = 'go-ext-controls';
       this.controls.appendChild(controlsContent);
 
+      const popupContainer = document.createElement('div');
+      popupContainer.className = 'go-ext-popup-container';
+      this.controls.appendChild(popupContainer);
+      window.goExtPopupContainer = popupContainer;
+
       this.container.appendChild(this.controls);
 
       document.body.appendChild(this.container);
@@ -237,10 +242,37 @@
 
         const index = preset.breakpoints.indexOf(breakpoint);
         const nextBreakpoint = preset.breakpoints[index + 1];
-        const minWidth = breakpoint.minWidth;
-        const maxWidth = nextBreakpoint ? nextBreakpoint.minWidth - 1 : '∞';
 
-        rangeEl.textContent = maxWidth === '∞' ? `${minWidth}px+` : `${minWidth}px – ${maxWidth}px`;
+        const minDisplay = typeof breakpoint.minWidth === 'number'
+          ? `${breakpoint.minWidth}px`
+          : String(breakpoint.minWidth);
+
+        let rangeText;
+        if (!nextBreakpoint) {
+          rangeText = `${minDisplay}+`;
+        } else {
+          const minPx = resolveCSSLengthToPx(breakpoint.minWidth);
+          const nextMinPx = resolveCSSLengthToPx(nextBreakpoint.minWidth);
+          if (minPx >= nextMinPx) {
+            rangeText = `${minDisplay}+`;
+          } else {
+            const currentUnit = splitCSSLength(breakpoint.minWidth).unit;
+            const nextUnit = splitCSSLength(nextBreakpoint.minWidth).unit;
+            const nextDisplay = typeof nextBreakpoint.minWidth === 'number'
+              ? `${nextBreakpoint.minWidth}px`
+              : String(nextBreakpoint.minWidth);
+            if (currentUnit && currentUnit === nextUnit) {
+              if (currentUnit === 'px') {
+                rangeText = `${minDisplay} \u2013 ${parseFloat(nextDisplay) - 1}px`;
+              } else {
+                rangeText = `${minDisplay} \u2013 ${nextDisplay}`;
+              }
+            } else {
+              rangeText = `${minDisplay} \u2013 ${Math.round(nextMinPx) - 1}px`;
+            }
+          }
+        }
+        rangeEl.textContent = rangeText;
       } else {
         nameEl.textContent = '—';
         rangeEl.textContent = '—';

@@ -88,7 +88,7 @@ class ViewRouter {
     }
 
     // Popups are appended to document.body, not containerElement
-    const existingPopup = document.body.querySelector('.go-ext-popup-frame');
+    const existingPopup = document.querySelector('.go-ext-popup-frame');
 
     // If no active popup, close existing with animation
     if (!appState.activePopup) {
@@ -181,11 +181,20 @@ class ViewRouter {
   }
 
   /**
+   * Update everything: screen UI, grid canvas, viewport indicator
+   */
+  static updateAll() {
+    this.updateCurrentScreen();
+    if (window.gridRenderer) window.gridRenderer.draw();
+    if (window.gridOverlayApp) window.gridOverlayApp.updateViewportIndicator();
+  }
+
+  /**
    * Close popup
    */
   static closePopup() {
     // Popups are appended to document.body, not containerElement
-    const existingPopup = document.body.querySelector('.go-ext-popup-frame');
+    const existingPopup = document.querySelector('.go-ext-popup-frame');
     if (existingPopup) {
       existingPopup.classList.add('go-ext-popup-closing');
       setTimeout(() => {
